@@ -319,8 +319,10 @@ field='0' # science field(s). For a mosaic, select all mosaic fields.
 # Generally, you want 5-8 cells across the narrowest part of the beam,
 # which is 206265.0/(longest baseline in wavelengths).  You can use
 # plotms with xaxis='uvwave' and yaxis='amp' to see what the longest
-# baseline is. Divide by five to eight to get your cell size. It's better to
-# error on the side of slightly too many cells per beam than too few.
+# baseline is. Divide by five to eight to get your cell size. It's
+# better to error on the side of slightly too many cells per beam than
+# too few. Once you have made an image, please re-assess the cell size
+# based on the beam of the image.
 
 # For single fields, the ALMA 12m beam in arcsec scales as 6300 /
 # nu[GHz]. For mosaics, you can get the mosaic size from the OT.
