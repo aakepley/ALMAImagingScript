@@ -2,7 +2,7 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: 2/12/2015
+# Updated: Thu Feb 19 14:54:53 EST 2015
 
 #--------------------------------------------------------------------------------------#
 #                     Data Preparation                                                 #
@@ -151,13 +151,15 @@ restfreq='115.27120GHz' # rest frequency of primary line of interest.
 
 sourcevislist = glob.glob("*.ms.split.cal.source")
 
+myspw = '0' # Set the input spw that you would like to process
+
 for sourcevis in sourcevislist:
     rmtables(sourcevis+'.cvel')
     os.system('rm -rf ' + regridvis + '.cvel.flagversions')
     mstransform(vis=sourcevis,
                 outputvis=sourcevis+'.cvel',
                 datacolumn='data', # depending on how the data were combined may need datacolumn='corrected'
-                spw='', # put the spws with matching rest frequencies here
+                spw=myspw, 
                 combinespws=True,          
                 regridms=True,
                 mode='velocity',
@@ -170,6 +172,9 @@ for sourcevis in sourcevislist:
 regridvislist = glob.glob("*ms.split.cal.source.cvel")
 concat(vis=regridvislist,
        concatvis=regridvis)
+
+# If you have multiple sets of spws that you wish you combine, just
+# repeat the above process with myspw set to the other value.
 
 ############################################
 # Rename and backup data set
@@ -379,10 +384,11 @@ clean(vis=contvis,
 
 # Note RMS for PI. 
 
-# save the mask
-contmaskname = 'cont.mask'
-#rmtables(contmaskname) # if you want to delete the old mask
-os.system('cp -ir ' + contimagename + '.mask ' + contmaskname)
+# If you'd like to redo your clean, but don't want to make a new mask
+# use the following commands to save your original mask. This is an optional step.
+#contmaskname = 'cont.mask'
+##rmtables(contmaskname) # if you want to delete the old mask
+#os.system('cp -ir ' + contimagename + '.mask ' + contmaskname)
 
 ##############################################
 # Self-calibration on the continuum [OPTIONAL]
@@ -701,7 +707,13 @@ width='2km/s' # velocity width. See science goals.
 nchan = 100  # number of channels. See science goals for appopriate value.
 outframe='bary' # velocity reference frame. See science goals.
 veltype='radio' # velocity type. See note below.
-restfreq='115.27120GHz' # rest frequency of primary line of interest. See science goals.
+restfreq='115.27120GHz' # Typically the rest frequency of the line of
+                        # interest. If the source has a significant
+                        # redshift (z>0.2), use the observed sky
+                        # frequency (nu_rest/(1+z)) instead of the
+                        # rest frequency of the
+                        # line.
+
 
 # Note on veltype: We recommend keeping veltype set to radio,
 # regardless of the velocity frame listed the object in the OT. If the
@@ -737,10 +749,12 @@ clean(vis=linevis,
 # iterations at which you stop for the PI. This number will help the
 # PI replicate the delivered images.
 
-# save the mask
-linemaskname = 'line.mask'
-rmtables(linemaskname) # uncomment if you want to overwrite the mask.
-os.system('cp -ir ' + lineimagename + '.mask ' + linemaskname)
+# If you'd like to redo your clean, but don't want to make a new mask
+# use the following commands to save your original mask. This is an
+# optional step.
+# linemaskname = 'line.mask'
+## rmtables(linemaskname) # uncomment if you want to overwrite the mask.
+# os.system('cp -ir ' + lineimagename + '.mask ' + linemaskname)
 
 ##############################################
 # Apply a primary beam correction
