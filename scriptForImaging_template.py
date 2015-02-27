@@ -2,7 +2,8 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Thu Feb 19 14:54:53 EST 2015
+# Updated:  Fri Feb 27 15:57:20 EST 2015
+
 
 #--------------------------------------------------------------------------------------#
 #                     Data Preparation                                                 #
@@ -22,9 +23,6 @@
 
 ########################################
 # Check CASA version
-
-# We need to use CASA 4.2.2 to get the improved weighting scheme and
-# CASA 4.3 has not been validated yet for ALMA data.
 
 import re
 
@@ -251,7 +249,7 @@ os.system('rm -rf ' + contvis + '.flagversions')
 split(vis=finalvis,
       spw=contspws,
       outputvis=contvis,
-      width=[128,128], # number of channels to average together. change to appropriate value for each spectral window.
+      width=[128,128], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)      
       datacolumn='data')   
 
 # Complex Line Emission
@@ -315,8 +313,10 @@ field='0' # science field(s). For a mosaic, select all mosaic fields.
 # phasecenter=3 # uncomment and set to field number for phase
                 # center. Note lack of ''.  Use the weblog to
                 # determine which pointing to use. Remember that the
-                # field ids for each pointing will be re-numbered after
-                # your initial split.
+                # field ids for each pointing will be re-numbered
+                # after your initial split. You can also specify the
+                # phase center using coordinates, e.g.,
+                # phasecenter='J2000 19h30m00 -40d00m00'
 
 # image parameters.
 # ----------------
@@ -330,6 +330,7 @@ field='0' # science field(s). For a mosaic, select all mosaic fields.
 # based on the beam of the image.
 
 # For single fields, the ALMA 12m beam in arcsec scales as 6300 /
+# nu[GHz] and the ALMA 1m beam in arcsec scales as 10608 /
 # nu[GHz]. For mosaics, you can get the mosaic size from the OT.
 
 # If you're imaging a mosaic, pad the imsize substantially to avoid
@@ -360,7 +361,7 @@ threshold = '0.0mJy'
          
 contimagename = 'calibrated_final_cont_image'
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(contimagename+ext)
 
 clean(vis=contvis,
@@ -405,7 +406,7 @@ spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral win
 
 # shallow clean on the continuum
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(contimagename + '_p0'+ ext)
     
 
@@ -457,7 +458,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # clean deeper
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(contimagename + '_p1'+ ext)
 
 clean(vis=contvis,
@@ -508,7 +509,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # clean deeper
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(contimagename + '_p2'+ ext)
 
 clean(vis=contvis,
@@ -558,7 +559,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # do the amplitude self-calibration.
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(contimagename + '_p3'+ ext)
 
 clean(vis=contvis,
@@ -609,7 +610,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # Make amplitude and phase self-calibrated image.
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(contimagename + '_ap'+ ext)
 
 clean(vis=contvis,
@@ -721,7 +722,7 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
 # definition of the velocity frame is used regardless of the velocity
 # definition in the "source parameters" tab of the OT.
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
     rmtables(lineimagename + ext)
 
 clean(vis=linevis,
