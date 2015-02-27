@@ -26,8 +26,8 @@
 
 import re
 
-if re.search('^4.2', casadef.casa_version) == None:
- sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT: 4.2')
+if (re.search('^4.2', casadef.casa_version) or re.search('^4.3', casadef.casa_version))  == None:
+ sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT: 4.2 or 4.3')
 
 ########################################
 # Getting a list of ms files to image
@@ -361,7 +361,7 @@ threshold = '0.0mJy'
          
 contimagename = 'calibrated_final_cont_image'
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename+ext)
 
 clean(vis=contvis,
@@ -406,7 +406,7 @@ spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral win
 
 # shallow clean on the continuum
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename + '_p0'+ ext)
     
 
@@ -458,7 +458,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # clean deeper
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename + '_p1'+ ext)
 
 clean(vis=contvis,
@@ -509,7 +509,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # clean deeper
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename + '_p2'+ ext)
 
 clean(vis=contvis,
@@ -559,7 +559,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # do the amplitude self-calibration.
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename + '_p3'+ ext)
 
 clean(vis=contvis,
@@ -610,7 +610,7 @@ applycal(vis=contvis,
          flagbackup=F)
 
 # Make amplitude and phase self-calibrated image.
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename + '_ap'+ ext)
 
 clean(vis=contvis,
@@ -722,7 +722,7 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
 # definition of the velocity frame is used regardless of the velocity
 # definition in the "source parameters" tab of the OT.
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(lineimagename + ext)
 
 clean(vis=linevis,
