@@ -2,8 +2,7 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated:  Fri Feb 27 15:57:20 EST 2015
-
+# Updated: Thu Mar 12 17:09:22 EDT 2015
 
 #--------------------------------------------------------------------------------------#
 #                     Data Preparation                                                 #
@@ -307,7 +306,7 @@ plotms(vis=contvis,xaxis='uvdist',yaxis='amp',coloraxis='spw')
 # source parameters
 # ------------------
 
-field='0' # science field(s). For a mosaic, select all mosaic fields.
+field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEAVE BLANK ('') OR YOU WILL TRIGGER A BUG IN CLEAN THAT WILL PUT THE WRONG COORDINATE SYSTEM ON YOUR FINAL IMAGE.
 # imagermode='csclean' # uncomment if single field
 # imagermode='mosaic' # uncomment if mosaic
 # phasecenter=3 # uncomment and set to field number for phase
