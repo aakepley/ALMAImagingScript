@@ -2,7 +2,7 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Thu Mar 12 17:09:22 EDT 2015
+# Updated: Wed Mar 18 14:13:02 EDT 2015
 
 #--------------------------------------------------------------------------------------#
 #                     Data Preparation                                                 #
@@ -329,7 +329,7 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # based on the beam of the image.
 
 # For single fields, the ALMA 12m beam in arcsec scales as 6300 /
-# nu[GHz] and the ALMA 1m beam in arcsec scales as 10608 /
+# nu[GHz] and the ALMA 7m beam in arcsec scales as 10608 /
 # nu[GHz]. For mosaics, you can get the mosaic size from the OT.
 
 # If you're imaging a mosaic, pad the imsize substantially to avoid
@@ -411,7 +411,8 @@ for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux
 
 clean(vis=contvis,
       imagename=contimagename + '_p0',
-      field=field, 
+      field=field,
+#      phasecenter=phasecenter, # uncomment if mosaic.      
       mode='mfs',
       psfmode='clark',
       imsize = imsize, 
@@ -462,6 +463,7 @@ for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux
 
 clean(vis=contvis,
       field=field,
+#      phasecenter=phasecenter, # uncomment if mosaic.      
       imagename=contimagename + '_p1',
       mode='mfs',
       psfmode='clark',
@@ -513,7 +515,8 @@ for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux
 
 clean(vis=contvis,
       imagename=contimagename + '_p2',
-      field=field, 
+      field=field,
+#      phasecenter=phasecenter, # uncomment if mosaic.            
       mode='mfs',
       psfmode='clark',
       imsize = imsize, 
@@ -563,7 +566,8 @@ for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux
 
 clean(vis=contvis,
       imagename=contimagename + '_p3',
-      field=field, 
+      field=field,
+#      phasecenter=phasecenter, # uncomment if mosaic.            
       mode='mfs',
       psfmode='clark',
       imsize = imsize, 
@@ -615,6 +619,7 @@ for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux
 clean(vis=contvis,
       imagename=contimagename + '_ap',
       field=field, 
+#      phasecenter=phasecenter, # uncomment if mosaic.      
       mode='mfs',
       psfmode='clark',
       imsize = imsize, 
