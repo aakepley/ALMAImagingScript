@@ -533,6 +533,7 @@ clean(vis=contvis,
 # shorter solution
 rmtables('pcal3')
 gaincal(vis=contvis,
+        field=field,
         caltable='pcal3',
         gaintype='T',
         refant=refant, 
@@ -583,6 +584,7 @@ clean(vis=contvis,
 
 rmtables('apcal')
 gaincal(vis=contvis,
+        field=field,
         caltable='apcal',
         gaintype='T',
         refant=refant,
