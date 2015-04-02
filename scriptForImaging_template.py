@@ -2,7 +2,10 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Thu Mar 26 14:15:44 EDT 2015
+# Updated: Thu Apr  2 09:29:22 PDT 2015
+
+# Helpful tip: Use the commands %cpaste or %paste to copy and paste
+# indented sections of code into the casa command line. 
 
 #--------------------------------------------------------------------------------------#
 #                     Data Preparation                                                 #
@@ -187,6 +190,10 @@ concat(vis=regridvislist,
 
 #os.system('cp -ir calibrated_final.ms calibrated_final.ms.backup')
 
+
+# Please do not modify the final name of the file
+# ('calibrated_final.ms'). The packaging process requires a file with
+# this name.
 
 #--------------------------------------------------------------------------------------#
 #                             Imaging Template                                         #
