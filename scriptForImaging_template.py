@@ -2,7 +2,8 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Thu Apr  2 09:29:22 PDT 2015
+# Updated: Wed Apr  8 15:13:30 MDT 2015
+
 
 # Helpful tip: Use the commands %cpaste or %paste to copy and paste
 # indented sections of code into the casa command line. 
@@ -327,20 +328,24 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # image parameters.
 # ----------------
 
-# Generally, you want 5-8 cells across the narrowest part of the beam,
-# which is 206265.0/(longest baseline in wavelengths).  You can use
-# plotms with xaxis='uvwave' and yaxis='amp' to see what the longest
-# baseline is. Divide by five to eight to get your cell size. It's
-# better to error on the side of slightly too many cells per beam than
-# too few. Once you have made an image, please re-assess the cell size
-# based on the beam of the image.
+# Generally, you want 5-8 cells (i.e., pixels) across the narrowest
+# part of the beam, which is 206265.0/(longest baseline in
+# wavelengths).  You can use plotms with xaxis='uvwave' and
+# yaxis='amp' to see what the longest baseline is. Divide by five to
+# eight to get your cell size. It's better to error on the side of
+# slightly too many cells per beam than too few. Once you have made an
+# image, please re-assess the cell size based on the beam of the
+# image.
 
-# For single fields, the ALMA 12m beam in arcsec scales as 6300 /
-# nu[GHz] and the ALMA 7m beam in arcsec scales as 10608 /
-# nu[GHz]. For mosaics, you can get the mosaic size from the OT.
-
-# If you're imaging a mosaic, pad the imsize substantially to avoid
-# artifacts.
+# To determine the image size (i.e., the imsize parameter), you need
+# to determine whether or not the ms is a mosaic by either looking out
+# the output from listobs or checking the spatial setup in the OT. For
+# single fields, the imsize should be about the size of the primary
+# beam. The ALMA 12m primary beam in arcsec scales as 6300 / nu[GHz]
+# and the ALMA 7m primary beam in arcsec scales as 10608 /
+# nu[GHz]. For mosaics, you can get the imsize from the spatial tab of
+# the OT. If you're imaging a mosaic, pad the imsize substantially to
+# avoid artifacts.
 
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels. 
