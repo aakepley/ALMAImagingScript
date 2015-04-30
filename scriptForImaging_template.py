@@ -2,8 +2,7 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Wed Apr  8 15:13:30 MDT 2015
-
+# Updated: Thu Apr 30 13:01:12 EDT 2015
 
 # Helpful tip: Use the commands %cpaste or %paste to copy and paste
 # indented sections of code into the casa command line. 
@@ -90,10 +89,26 @@ for vis in vislist:
 # pros/cons:
 # https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts
 
-# The code below provides three different options to do this. Choose
-# one depending on your data set and personal preferences! We are
-# still generating recommendations for best practices for this
-# step. Contact akepley@nrao.edu if you have input.
+# The code below provides three different options to do this. The NA
+# imaging group strongly recommends first option (simple concat)
+# followed by regridding in clean if necessary. If the number of
+# spectral windows x executions is large, the appropriate spectral
+# windows could be generated using the following code:
+
+#  import numpy as np
+#  myspw = str.join(',',map(str,np.arange(0,n,nspw)))
+
+# where n is the total number of windows x executions and nspw is the
+# number of spectral windows per execution.
+
+# If you want to generate subsequent sets of spectral windows, just
+# add an constant offset to the array, e.g.,
+
+# myspw2 = str.join(',',map(str,np.arange(0,n,nspw)+1))
+
+# Note that this code assumes that the windows are in the same order
+# in all executions, so please check that this is true for your data
+# set. 
 
 # Simple concat (spws not combined)
 # ---------------------------------
@@ -132,47 +147,57 @@ concat(vis=sourcevislist,
        concatvis=regridvis,
        freqtol='1kHz') # choose appropriate value for data set. Should be less than 1/5 the narrowest channel size.
 
-# MSTRANSFORM/CVEL case (combines spws with large frequency shifts)
+# CVEL case (combines spws with large frequency shifts)
 # -----------------------------------------------------------------
 
-# Use this code only to combine spws with large shifts in the
-# frequency axis, i.e., too large to use the previous option.
+# This code could be used to combine spws with large shifts in the
+# frequency axis, i.e., too large to use the previous option. The NA
+# Imaging group only recommends using this option when there are
+# significant shifts in the frequency axis of your data due the the
+# motion of the Earth that would make identifying common channels for
+# continuum subtraction difficult across multiple executions.
 
-# The cvel task could also be used here. If you have multiple spectral
-# lines, you will need to run the mstransform task once per line.
+# Since the transformation between frequency and velocity is not
+# linear, the data should be regridded using the frequency rather than
+# velocity mode. Identifying the frequency of the correct starting
+# channel is crucial here. You may need to run cvel twice: once with
+# start='' to see what the starting frequency is for all the data sets
+# and then a second time with start set to a value that all data sets
+# have in common.
+
+# The tasks concat and mstransform(combinespws=True) could be used to
+# regrid. However, since this task is still experimental, we ask it
+# not be used for regridding data that will be delivered to PIs.
 
 regridvis='source_calibrated_regrid.ms'
-veltype='radio' # velocity type.
-
-# see science goals in OT to set following parameters.
-width='2km/s' # velocity width of channels in output spw.
-nchan = 100  # number of channels in output spw.
-outframe='bary' # velocity reference frame. 
+veltype = 'radio'
+width = '' # leave this as the default to regrid at the same channel resolution.
+nchan = -1 # leave this as the default
+mode='frequency'
+start='90.690706GHz' 
+outframe = 'bary' # velocity reference frame. 
 restfreq='115.27120GHz' # rest frequency of primary line of interest. 
-
-sourcevislist = glob.glob("*.ms.split.cal.source")
-
-myspw = '0' # Set the input spw that you would like to process
+myspw='1'
 
 for sourcevis in sourcevislist:
     rmtables(sourcevis+'.cvel')
     os.system('rm -rf ' + regridvis + '.cvel.flagversions')
-    mstransform(vis=sourcevis,
-                outputvis=sourcevis+'.cvel',
-                datacolumn='data', # depending on how the data were combined may need datacolumn='corrected'
-                spw=myspw, 
-                combinespws=True,          
-                regridms=True,
-                mode='velocity',
-                nchan=nchan, 
-                width=width, 
-                restfreq=restfreq, 
-                outframe=outframe, 
-                veltype=veltype)
+    
+    cvel(vis=sourcevis,
+         field='4~14',
+         outputvis=sourcevis+'.cvel',
+         spw=myspw,
+         mode=mode,
+         nchan=nchan,
+         width=width,
+         start=start,
+         restfreq=restfreq,
+         outframe=outframe,
+         veltype=veltype)
 
 regridvislist = glob.glob("*ms.split.cal.source.cvel")
-concat(vis=regridvislist,
-       concatvis=regridvis)
+rmtables(regridvis)
+concat(vis=regridvislist, concatvis=regridvis,freqtol='1Hz')
 
 # If you have multiple sets of spws that you wish you combine, just
 # repeat the above process with myspw set to the other value.
@@ -337,15 +362,18 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # image, please re-assess the cell size based on the beam of the
 # image.
 
-# To determine the image size (i.e., the imsize parameter), you need
-# to determine whether or not the ms is a mosaic by either looking out
-# the output from listobs or checking the spatial setup in the OT. For
-# single fields, the imsize should be about the size of the primary
-# beam. The ALMA 12m primary beam in arcsec scales as 6300 / nu[GHz]
-# and the ALMA 7m primary beam in arcsec scales as 10608 /
-# nu[GHz]. For mosaics, you can get the imsize from the spatial tab of
-# the OT. If you're imaging a mosaic, pad the imsize substantially to
-# avoid artifacts.
+# To determine the image size (i.e., the imsize parameter), first need
+# to figure out whether or not the ms is a mosaic by either looking
+# out the output from listobs or checking the spatial setup in the
+# OT. For single fields, an imsize equal to the size of the primary
+# beam is usually sufficient. The ALMA 12m primary beam in arcsec
+# scales as 6300 / nu[GHz] and the ALMA 7m primary beam in arcsec
+# scales as 10608 / nu[GHz]. However, if there is significant point
+# source and/or extended emission (beyond the edges of your initial
+# images, you should increase the imsize to incorporate more
+# emission. For mosaics, you can get the imsize from the spatial tab
+# of the OT. If you're imaging a mosaic, pad the imsize substantially
+# to avoid artifacts.
 
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels. 
@@ -733,6 +761,17 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
                         # rest frequency of the
                         # line.
 
+# spw='1' # uncomment and replace with appropriate spw if necessary.
+
+# To specify a spws from multiple executions, use
+#       import numpy as np
+#       spw = str.join(',',map(str,np.arange(0,n,nspw)))
+#
+# where n is the total number of windows x executions and nspw is the
+# number of spectral windows per execution. Note that the spectral
+# windows need to have the same order in all data sets for this code
+# to work. Add a constant offset (i.e., +1,+2,+3) to the array
+# generated by np.arange to get the other sets of windows.
 
 # Note on veltype: We recommend keeping veltype set to radio,
 # regardless of the velocity frame listed the object in the OT. If the
