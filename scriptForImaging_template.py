@@ -76,7 +76,7 @@ for vis in vislist:
 
 
 ###############################################################
-# Combining Measurement Sets from Multiple Executions [OPTIONAL]
+# Combining Measurement Sets from Multiple Executions 
 
 # If you have multiple executions, you will want to combine the
 # scheduling blocks into a single ms using concat for ease of imaging
@@ -96,26 +96,29 @@ os.system('rm -rf ' + regridvis + '.flagversions')
 concat(vis=sourcevislist,
        concatvis=concatvis)
 
+###############################################################
+# Regridding spectral windows [OPTIONAL]
+
 # The spws associated with a common rest frequency can be regridded to
-# a single spectral window using the clean process or using the cvel
+# a single spectral window during cleaning or using the cvel
 # command. The NA imaging team strongly recommends the first option,
 # unless the lines shift too much between executions to identify an
-# appropriate channel range for continuum subtraction. The code below
-# uses cvel to regrid multiple spws associated with a single rest
-# frequency into a single spw. You will want to use the same
-# regridding parameters later when you clean to avoid clean regridding
-# the image a second time.
+# common channel range for continuum subtraction. The code below uses
+# cvel to regrid multiple spws associated with a single rest frequency
+# into a single spw. You will want to use the same regridding
+# parameters later when you clean to avoid clean regridding the image
+# a second time.
 
 regridvis='source_calibrated_regrid.ms'
-veltype = 'radio' # see science goals in the OT
+veltype = 'radio' # Keep set to radio. See notes in imaging section.
 width = '0.23km/s' # see science goals in the OT
 nchan = -1 # leave this as the default
 mode='velocity' # see science goals in the OT
 start='' # leave this as the default
-outframe = 'bary' # velocity reference frame. 
+outframe = 'bary' # velocity reference frame. see science goals in the OT.
 restfreq='115.27120GHz' # rest frequency of primary line of interest. 
-field = '4' # see science goals in the OT.
-spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to combine spectral windows associated with different rest frequencies. This will take a long time regrid.
+field = '4' # select science fields.
+spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to combine spectral windows associated with different rest frequencies. This will take a long time regrid and most likely isn't what you want.
 
 rmtables(regridvis)
 os.system('rm -rf ' + regridvis + '.flagversions')
@@ -135,6 +138,7 @@ cvel(vis=concatvis,
 # If you have multiple sets of spws that you wish you combine, just
 # repeat the above process with myspw set to the other value.
 
+
 ############################################
 # Rename and backup data set
 
@@ -142,7 +146,8 @@ cvel(vis=concatvis,
 # os.system('mv -i ' + sourcevis + ' ' + 'calibrated_final.ms')
 
 # If you have multiple executions:
-# os.system('mv -i ' + regridvis + ' ' + 'calibrated_final.ms')
+# os.system('mv -i ' + concatvis + ' ' + 'calibrated_final.ms') # if just concated
+# os.system('mv -i ' + regridvis + ' ' + 'calibrated_final.ms') # if concated and regridded
 
 # At this point you should create a backup of your final data set in
 # case the ms you are working with gets corrupted by clean. 
@@ -696,7 +701,7 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
 
 # spw='1' # uncomment and replace with appropriate spw if necessary.
 
-# To specify a spws from multiple executions, use
+# To specify a spws from multiple executions that had not been regridded using cvel, use
 #       import numpy as np
 #       spw = str.join(',',map(str,np.arange(0,n,nspw)))
 #
