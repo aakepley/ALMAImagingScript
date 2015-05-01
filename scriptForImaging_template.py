@@ -78,126 +78,59 @@ for vis in vislist:
 ###############################################################
 # Combining Measurement Sets from Multiple Executions [OPTIONAL]
 
-# Scheduling blocks with multiple executions can generate multiple
-# spectral windows with different sky frequencies, but the same rest
-# frequency, due to the motion of the Earth. Due to Doppler setting,
-# the number of spectral windows in this case is typically
-# spw=(#original science spws) x (number executions).  It is possible
-# to combine these spws now to make imaging easier later on. However,
-# this step can be skipped and done in the line imaging stage. See the
-# NA imaging wiki for a full description of your options and their
-# pros/cons:
-# https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts
-
-# The code below provides three different options to do this. The NA
-# imaging group strongly recommends first option (simple concat)
-# followed by regridding in clean if necessary. If the number of
-# spectral windows x executions is large, the appropriate spectral
-# windows could be generated using the following code:
-
-#  import numpy as np
-#  myspw = str.join(',',map(str,np.arange(0,n,nspw)))
-
-# where n is the total number of windows x executions and nspw is the
-# number of spectral windows per execution.
-
-# If you want to generate subsequent sets of spectral windows, just
-# add an constant offset to the array, e.g.,
-
-# myspw2 = str.join(',',map(str,np.arange(0,n,nspw)+1))
-
-# Note that this code assumes that the windows are in the same order
-# in all executions, so please check that this is true for your data
-# set. 
-
-# Simple concat (spws not combined)
-# ---------------------------------
-
-# Ms'es from multiple executions of the same scheduling block can be
-# combined into one ms using concat. In this case, you will end up
-# with a single ms with n spws, where n is (#original science spws) x
-# (number executions). The multiple spws associated with a single
-# frequency will not be regridded to a single spectral window in the
-# ms.  However, they can be regridded to a single spectral window
-# later during cleaning. If you are planning on doing any
-# self-calibration, you should do at least this step, although you may
-# want to consider one of the other methods outlined below.
+# If you have multiple executions, you will want to combine the
+# scheduling blocks into a single ms using concat for ease of imaging
+# and self-calibration. Each execution of the scheduling block will
+# generate multiple spectral windows with different sky frequencies,
+# but the same rest frequency, due to the motion of the Earth. Thus,
+# the resulting concatentated file will contain n spws, where n is
+# (#original science spws) x (number executions).  In other words, the
+# multiple spws associated with a single rest frequency will not be
+# regridded to a single spectral window in the ms.
 
 sourcevislist = glob.glob("*.ms.split.cal.source")
-regridvis='source_calibrated_regrid.ms'
+concatvis='source_calibrated_concat.ms'
 
 rmtables(regridvis)
 os.system('rm -rf ' + regridvis + '.flagversions')
 concat(vis=sourcevislist,
-       concatvis=regridvis) 
+       concatvis=concatvis)
 
-# Special concat case (combines spws with small frequency shifts)
-# ---------------------------------------------------------------
-
-# Use this code only to combine spws with small changes in the
-# frequency axis. In general, freqtol should be no more than 1/5 the
-# narrowest channel size.
-
-sourcevislist = glob.glob("*.ms.split.cal.source")
-regridvis='source_calibrated_regrid.ms'
-
-rmtables(regridvis)
-os.system('rm -rf ' + regridvis + '.flagversions')
-concat(vis=sourcevislist,
-       concatvis=regridvis,
-       freqtol='1kHz') # choose appropriate value for data set. Should be less than 1/5 the narrowest channel size.
-
-# CVEL case (combines spws with large frequency shifts)
-# -----------------------------------------------------------------
-
-# This code could be used to combine spws with large shifts in the
-# frequency axis, i.e., too large to use the previous option. The NA
-# Imaging group only recommends using this option when there are
-# significant shifts in the frequency axis of your data due the the
-# motion of the Earth that would make identifying common channels for
-# continuum subtraction difficult across multiple executions.
-
-# Since the transformation between frequency and velocity is not
-# linear, the data should be regridded using the frequency rather than
-# velocity mode. Identifying the frequency of the correct starting
-# channel is crucial here. You may need to run cvel twice: once with
-# start='' to see what the starting frequency is for all the data sets
-# and then a second time with start set to a value that all data sets
-# have in common.
-
-# The tasks concat and mstransform(combinespws=True) could be used to
-# regrid. However, since this task is still experimental, we ask it
-# not be used for regridding data that will be delivered to PIs.
+# The spws associated with a common rest frequency can be regridded to
+# a single spectral window using the clean process or using the cvel
+# command. The NA imaging team strongly recommends the first option,
+# unless the lines shift too much between executions to identify an
+# appropriate channel range for continuum subtraction. The code below
+# uses cvel to regrid multiple spws associated with a single rest
+# frequency into a single spw. You will want to use the same
+# regridding parameters later when you clean to avoid clean regridding
+# the image a second time.
 
 regridvis='source_calibrated_regrid.ms'
-veltype = 'radio'
-width = '' # leave this as the default to regrid at the same channel resolution.
+veltype = 'radio' # see science goals in the OT
+width = '0.23km/s' # see science goals in the OT
 nchan = -1 # leave this as the default
-mode='frequency'
-start='90.690706GHz' 
+mode='velocity' # see science goals in the OT
+start='' # leave this as the default
 outframe = 'bary' # velocity reference frame. 
 restfreq='115.27120GHz' # rest frequency of primary line of interest. 
-myspw='1'
+field = '4' # see science goals in the OT.
+spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to combine spectral windows associated with different rest frequencies. This will take a long time regrid.
 
-for sourcevis in sourcevislist:
-    rmtables(sourcevis+'.cvel')
-    os.system('rm -rf ' + regridvis + '.cvel.flagversions')
-    
-    cvel(vis=sourcevis,
-         field='4~14',
-         outputvis=sourcevis+'.cvel',
-         spw=myspw,
-         mode=mode,
-         nchan=nchan,
-         width=width,
-         start=start,
-         restfreq=restfreq,
-         outframe=outframe,
-         veltype=veltype)
-
-regridvislist = glob.glob("*ms.split.cal.source.cvel")
 rmtables(regridvis)
-concat(vis=regridvislist, concatvis=regridvis,freqtol='1Hz')
+os.system('rm -rf ' + regridvis + '.flagversions')
+    
+cvel(vis=concatvis,
+     field=field,
+     outputvis=regridvis,
+     spw=spw,
+     mode=mode,
+     nchan=nchan,
+     width=width,
+     start=start,
+     restfreq=restfreq,
+     outframe=outframe,
+     veltype=veltype)
 
 # If you have multiple sets of spws that you wish you combine, just
 # repeat the above process with myspw set to the other value.
