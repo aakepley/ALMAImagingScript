@@ -118,7 +118,7 @@ start='' # leave this as the default
 outframe = 'bary' # velocity reference frame. see science goals in the OT.
 restfreq='115.27120GHz' # rest frequency of primary line of interest. 
 field = '4' # select science fields.
-spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to combine spectral windows associated with different rest frequencies. This will take a long time regrid and most likely isn't what you want.
+spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to combine spectral windows associated with different rest frequencies. This will take a long time to regrid and most likely isn't what you want.
 
 rmtables(regridvis)
 os.system('rm -rf ' + regridvis + '.flagversions')
@@ -136,7 +136,7 @@ cvel(vis=concatvis,
      veltype=veltype)
 
 # If you have multiple sets of spws that you wish you combine, just
-# repeat the above process with myspw set to the other value.
+# repeat the above process with spw set to the other values.
 
 
 ############################################
