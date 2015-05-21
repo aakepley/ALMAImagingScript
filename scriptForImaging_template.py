@@ -2,7 +2,7 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Thu Apr 30 13:01:12 EDT 2015
+# Updated: Thu May 21 15:22:27 EDT 2015
 
 # Helpful tip: Use the commands %cpaste or %paste to copy and paste
 # indented sections of code into the casa command line. 
@@ -60,7 +60,9 @@ for vis in vislist:
 
     # INCLUDE LISTOBS OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
 
-# Doing the split
+# Doing the split.  If multiple data sets were rescaled using
+# scriptForFluxCalibration.py, need to get datacolumn='corrected'
+
 for vis in vislist:
     sourcevis=vis+'.source'
     rmtables(sourcevis)
@@ -68,9 +70,7 @@ for vis in vislist:
     split(vis=vis,
           intent='*TARGET*', # split off the target sources
           outputvis=sourcevis,
-          datacolumn='data') # If multiple data sets were rescaled using scriptForFluxCalibration.py, need to get datacolumn='corrected'
-
-
+          datacolumn='data')
     # Check that split worked as desired.
     listobs(vis=sourcevis) 
 
