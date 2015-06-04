@@ -2,7 +2,7 @@
 #                        TEMPLATE IMAGING SCRIPT                                       #
 # =====================================================================================#
 
-# Updated: Thu May 21 15:22:27 EDT 2015
+# Updated: Thu Jun  4 09:48:41 EDT 2015
 
 # Helpful tip: Use the commands %cpaste or %paste to copy and paste
 # indented sections of code into the casa command line. 
@@ -172,15 +172,15 @@ cvel(vis=concatvis,
 # more information.
 
 # Before imaging, you should use the commands the first section of
-# this script to prep the data for imaging.  The commands in both file
-# should be able to be run as as standard Python script. However, the
-# cleaning in this script is done interactively making the final
-# product somewhat dependent on the individual doing the clean --
-# please clean conservatively (i.e., don't box every possible
-# source). The final data products are the cleaned images (*.image),
-# the primary beam corrected images (*.pbcor), and the primary beams
-# (*.flux). These images should be converted to fits at the end of the
-# script (see example at the end of this file).
+# this script to prep the data for imaging.  The commands in both
+# sections should be able to be run as as standard Python
+# script. However, the cleaning in this script is done interactively
+# making the final product somewhat dependent on the individual doing
+# the clean -- please clean conservatively (i.e., don't box every
+# possible source). The final data products are the cleaned images
+# (*.image), the primary beam corrected images (*.pbcor), and the
+# primary beams (*.flux). These images should be converted to fits at
+# the end of the script (see example at the end of this file).
 
 # This script (and the associated guide) are under active
 # development. Please contact Amanda Kepley (akepley@nrao.edu) if you
@@ -188,7 +188,30 @@ cvel(vis=concatvis,
 # certainly there.
 
 ##################################################
-# Identify Line-free SPWs and channels
+# Create an Averaged Continuum MS
+
+# Continuum images can be sped up considerably by averaging the data
+# together to reduce overall volume.  Since the sensitivity of a
+# continuum image depends on its bandwidth, continuum images are
+# typically made by including as much bandwidth as possible in the
+# data while excluding any line emission. The following plotms command
+# pages through the spectral windows in a project allowing you to
+# identify channel ranges within spectral windows that do not include
+# *strong* line emission. You will form a continuum image by averaging
+# the line-free spws and/or channel ranges within spws. In most cases,
+# you will not need to create an image to select line channels,
+# although you can suggest this to the PI as a possible path for
+# future exploration in the README file for cases where there is
+# wide-spread line emission.
+
+# For a project with continuum target sensitivities, it is worth
+# checking the OT to see what continuum bandwidth the PI was
+# anticipating. In many cases, the continuum-only windows will be
+# specified in the OT, in general these have the broadest bandwidths
+# (~2GHz) with a small number of channels (128).  However, other
+# windows may be combined with these designated continuum windows to
+# increase the continuum sensitivity. In general, it is not necessary
+# to include narrow spectral windows (<250MHz) in the continuum image.
 
 finalvis='calibrated_final.ms' # This is your output ms from the data
                                # preparation script.
@@ -200,37 +223,12 @@ plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
 #       avgbaseline=True, # try if you don't see anything with the time and frequency averaging
        iteraxis='spw' )
 
-##################################################
-# Create an Averaged Continuum MS
 
-# Continuum images can be sped up considerably by averaging the data
-# together to reduce overall volume.
-
-# Project includes Continuum-only SPWs
-# ----------------------------------------
-
-# In this case, you just need to average dedicated continuum spws.
-
-# Average channels within spws
-contspws='0,1' # from plotms output
-contvis='calibrated_final_cont.ms'
-rmtables(contvis)
-os.system('rm -rf ' + contvis + '.flagversions')
-split(vis=finalvis,
-      spw=contspws,
-      outputvis=contvis,
-      width=[128,128], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)      
-      datacolumn='data')   
-
-# Complex Line Emission
-# --------------------
+# Set spws to be used to form continuum
+contspws = '0,1,2,3'
 
 # If you have complex line emission and no dedicated continuum
 # windows, you will need to flag the line channels prior to averaging.
-
-# Set continuum spws here based on plotms output.
-contspws = '0,1,2,3'
-
 flagmanager(vis=finalvis,mode='save',
             versionname='before_cont_flags')
 
@@ -261,7 +259,7 @@ split(vis=finalvis,
 # channels in an SPW. Specifying the width of each spw (as done above)
 # is necessary for producing properly weighted data.
 
-# Restore the flags
+# If you flagged any line channels, restore the previous flags
 flagmanager(vis=finalvis,mode='restore',
             versionname='before_cont_flags')
 
@@ -300,18 +298,19 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # image, please re-assess the cell size based on the beam of the
 # image.
 
-# To determine the image size (i.e., the imsize parameter), first need
-# to figure out whether or not the ms is a mosaic by either looking
-# out the output from listobs or checking the spatial setup in the
-# OT. For single fields, an imsize equal to the size of the primary
-# beam is usually sufficient. The ALMA 12m primary beam in arcsec
-# scales as 6300 / nu[GHz] and the ALMA 7m primary beam in arcsec
-# scales as 10608 / nu[GHz]. However, if there is significant point
-# source and/or extended emission (beyond the edges of your initial
-# images, you should increase the imsize to incorporate more
-# emission. For mosaics, you can get the imsize from the spatial tab
-# of the OT. If you're imaging a mosaic, pad the imsize substantially
-# to avoid artifacts.
+# To determine the image size (i.e., the imsize parameter), first you
+# need to figure out whether the ms is a mosaic by either looking out
+# the output from listobs or checking the spatial setup in the OT. For
+# single fields, an imsize equal to the size of the primary beam is
+# usually sufficient. The ALMA 12m primary beam in arcsec scales as
+# 6300 / nu[GHz] and the ALMA 7m primary beam in arcsec scales as
+# 10608 / nu[GHz], where nu[GHz] is the sky frequency. However, if
+# there is significant point source and/or extended emission beyond
+# the edges of your initial images, you should increase the imsize to
+# incorporate more emission. For mosaics, you can get the imsize from
+# the spatial tab of the OT. The parameters "p length" and "q length"
+# specify the dimensions of the mosaic. If you're imaging a mosaic,
+# pad the imsize substantially to avoid artifacts.
 
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels. 
