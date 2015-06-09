@@ -290,13 +290,13 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # ----------------
 
 # Generally, you want 5-8 cells (i.e., pixels) across the narrowest
-# part of the beam, which is 206265.0/(longest baseline in
-# wavelengths).  You can use plotms with xaxis='uvwave' and
-# yaxis='amp' to see what the longest baseline is. Divide by five to
-# eight to get your cell size. It's better to error on the side of
-# slightly too many cells per beam than too few. Once you have made an
-# image, please re-assess the cell size based on the beam of the
-# image.
+# part of the beam. You can estimate the beam size using the following
+# equation: 206265.0/(longest baseline in wavelengths).  To determine
+# the longest baseline, use plotms with xaxis='uvwave' and
+# yaxis='amp'. Divide the estimated beam size by five to eight to get
+# your cell size. It's better to error on the side of slightly too
+# many cells per beam than too few. Once you have made an image,
+# please re-assess the cell size based on the beam of the image.
 
 # To determine the image size (i.e., the imsize parameter), first you
 # need to figure out whether the ms is a mosaic by either looking out
