@@ -152,7 +152,7 @@ cvel(vis=concatvis,
 # At this point you should create a backup of your final data set in
 # case the ms you are working with gets corrupted by clean. 
 
-#os.system('cp -ir calibrated_final.ms calibrated_final.ms.backup')
+# os.system('cp -ir calibrated_final.ms calibrated_final.ms.backup')
 
 
 # Please do not modify the final name of the file
@@ -313,7 +313,22 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # pad the imsize substantially to avoid artifacts.
 
 cell='1arcsec' # cell size for imaging.
-imsize = [128,128] # size of image in pixels. 
+imsize = [128,128] # size of image in pixels.
+
+# velocity parameters
+# -------------------
+
+start='-100km/s' # start velocity. See science goals for appropriate value.
+width='2km/s' # velocity width. See science goals.
+nchan = 100  # number of channels. See science goals for appopriate value.
+outframe='bary' # velocity reference frame. See science goals.
+veltype='radio' # velocity type. See note below.
+
+# Note on veltype: We recommend keeping veltype set to radio,
+# regardless of the velocity frame listed the object in the OT. If the
+# sensitivity is defined using a velocity width, then the 'radio'
+# definition of the velocity frame is used regardless of the velocity
+# definition in the "source parameters" tab of the OT.
 
 # imaging control
 # ----------------
@@ -329,13 +344,15 @@ threshold = '0.0mJy'
 #############################################
 # Imaging the Continuuum
 
+# Set the ms and continuum image name.
+contvis = 'calibrated_final_cont.ms'         
+contimagename = 'calibrated_final_cont_image'
+
 # If necessary, run the following commands to get rid of older clean
 # data.
 
 #clearcal(vis=contvis)
 #delmod(vis=contvis)
-         
-contimagename = 'calibrated_final_cont_image'
 
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename+ext)
@@ -376,7 +393,9 @@ clean(vis=contvis,
 # you may not be able to find solution on timescales that short and
 # may need to adjust the solint parameter.
 
-# set these for self-calibration solutions
+contvis = 'calibrated_final_cont.ms'         
+contimagename = 'calibrated_final_cont_image'
+
 refant = 'DV09' # reference antenna. Choose one that's in the array. The tasks plotants and listobs can tell you what antennas are in the array.
 spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral windows. Generally an array of n zeroes, where n is the number of spectral windows in the data sets.
 
@@ -385,7 +404,6 @@ spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral win
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(contimagename + '_p0'+ ext)
     
-
 clean(vis=contvis,
       imagename=contimagename + '_p0',
       field=field,
@@ -629,6 +647,8 @@ split(vis=contvis,
 fitspw = '0,1,2:0~1200;1500~3839,3:0~1200;1500~3839' # line-free channel for fitting continuum
 linespw = '2,3' # line spectral windows. You can subtract the continuum from multiple spectral line windows at once.
 
+finalvis='calibrated_final.ms'
+
 uvcontsub(vis=finalvis,
           spw=linespw, # spw to do continuum subtraction on
           fitspw=fitspw, # select spws to fit continuum. exclude regions with strong lines.
@@ -648,6 +668,7 @@ linevis = finalvis+'.contsub'
 #########################################################
 # Apply continuum self-calibration to line data [OPTIONAL]
 
+linevis = finalvis+'.contsub'
 spwmap_line = [0] # Mapping self-calibration solution to the individual line spectral windows.
 applycal(vis=linevis,
          spwmap=[spwmap_line, spwmap_line], # select which spws to apply the solutions for each table
@@ -675,29 +696,20 @@ linevis=linevis+'.selfcal'
 # REST FREQUENCIES IN THE SAME RUN OF CLEAN: THEY WILL SLOW DOWN
 # IMAGING CONSIDERABLY.
 
-# If necessary, run the following commands to get rid of older clean
-# data.
+finalvis = 'calibrated_final.ms'
+# linevis = finalvis + '.contsub' # uncomment if continuum subtracted
+# linevis = linvis + '.selfcal' # uncommment if self-calibrated
 
-#clearcal(vis=linevis)
-#delmod(vis=linevis)
+sourcename ='n253' # name of source
+linename = 'CO10' # name of transition (see science goals in OT for name) 
+lineimagename = sourcename+'_'+linename+'_image' # name of line image
 
-# velocity parameters
-# -------------------
-
-lineimagename = 'source_calibrated_line_image' # name of line image
-
-start='-100km/s' # start velocity. See science goals for appropriate value.
-width='2km/s' # velocity width. See science goals.
-nchan = 100  # number of channels. See science goals for appopriate value.
-outframe='bary' # velocity reference frame. See science goals.
-veltype='radio' # velocity type. See note below.
 restfreq='115.27120GHz' # Typically the rest frequency of the line of
                         # interest. If the source has a significant
                         # redshift (z>0.2), use the observed sky
                         # frequency (nu_rest/(1+z)) instead of the
                         # rest frequency of the
                         # line.
-
 # spw='1' # uncomment and replace with appropriate spw if necessary.
 
 # To specify a spws from multiple executions that had not been regridded using cvel, use
@@ -710,11 +722,11 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
 # to work. Add a constant offset (i.e., +1,+2,+3) to the array
 # generated by np.arange to get the other sets of windows.
 
-# Note on veltype: We recommend keeping veltype set to radio,
-# regardless of the velocity frame listed the object in the OT. If the
-# sensitivity is defined using a velocity width, then the 'radio'
-# definition of the velocity frame is used regardless of the velocity
-# definition in the "source parameters" tab of the OT.
+# If necessary, run the following commands to get rid of older clean
+# data.
+
+#clearcal(vis=linevis)
+#delmod(vis=linevis)
 
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
     rmtables(lineimagename + ext)
