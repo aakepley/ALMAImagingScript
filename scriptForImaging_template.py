@@ -1,27 +1,32 @@
-#======================================================================================#
-#                        TEMPLATE IMAGING SCRIPT                                       #
-# =====================================================================================#
+#>>> ======================================================================================#
+#>>>                        TEMPLATE IMAGING SCRIPT                                       #
+#>>> =====================================================================================#
 
-# Updated: Thu Jun  4 09:48:41 EDT 2015
+#>>> Updated: Thu Jun 25 13:33:01 EDT 2015
 
-# Helpful tip: Use the commands %cpaste or %paste to copy and paste
-# indented sections of code into the casa command line. 
+#>>> Lines beginning with '#>>>' are instructions to the data imager
+# and will be removed from the script delivered to the PI. If you
+# would like to include a comment that will be passed to the PI, begin
+# the line with a single '#', i.e., standard python comment syntax.
 
-#--------------------------------------------------------------------------------------#
-#                     Data Preparation                                                 #
-# -------------------------------------------------------------------------------------#
+#>>> Helpful tip: Use the commands %cpaste or %paste to copy and paste
+#>>> indented sections of code into the casa command line.
 
-# Below are some example commands for combining your data. All of
-# these commands will not be relevant for all datasets, so think about
-# what would be best for your data before running any commands. For
-# more information, see the NA Imaging Guide
-# (https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts).
+#>>>--------------------------------------------------------------------------------------#
+#>>>                     Data Preparation                                                 #
+#>>> -------------------------------------------------------------------------------------#
 
-# These commands should be run prior to undertaking any imaging.
+#>>> Below are some example commands for combining your data. All of
+#>>> these commands will not be relevant for all datasets, so think about
+#>>> what would be best for your data before running any commands. For
+#>>> more information, see the NA Imaging Guide
+#>>> (https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts).
 
-# The NA Imaging team is working on generating best
-# practices for this step. Suggestions are welcome!  Please send to
-# akepley@nrao.edu and she'll forward them on to the NA Imaging team.
+#>>> These commands should be run prior to undertaking any imaging.
+
+#>>> The NA Imaging team is working on generating best
+#>>> practices for this step. Suggestions are welcome!  Please send to
+#>>> akepley@nrao.edu and she'll forward them on to the NA Imaging team.
 
 ########################################
 # Check CASA version
@@ -58,10 +63,10 @@ for vis in vislist:
 for vis in vislist:
     listobs(vis=vis)
 
-    # INCLUDE LISTOBS OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
+    #>>> INCLUDE LISTOBS OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
 
-# Doing the split.  If multiple data sets were rescaled using
-# scriptForFluxCalibration.py, need to get datacolumn='corrected'
+#>>> Doing the split.  If multiple data sets were rescaled using
+#>>> scriptForFluxCalibration.py, need to get datacolumn='corrected'
 
 for vis in vislist:
     sourcevis=vis+'.source'
@@ -91,23 +96,23 @@ for vis in vislist:
 sourcevislist = glob.glob("*.ms.split.cal.source")
 concatvis='source_calibrated_concat.ms'
 
-rmtables(regridvis)
-os.system('rm -rf ' + regridvis + '.flagversions')
+rmtables(concatvis)
+os.system('rm -rf ' + concatvis + '.flagversions')
 concat(vis=sourcevislist,
        concatvis=concatvis)
 
 ###############################################################
 # Regridding spectral windows [OPTIONAL]
 
-# The spws associated with a common rest frequency can be regridded to
-# a single spectral window during cleaning or using the cvel
-# command. The NA imaging team strongly recommends the first option,
-# unless the lines shift too much between executions to identify an
-# common channel range for continuum subtraction. The code below uses
-# cvel to regrid multiple spws associated with a single rest frequency
-# into a single spw. You will want to use the same regridding
-# parameters later when you clean to avoid clean regridding the image
-# a second time.
+#>>> The spws associated with a common rest frequency can be regridded to
+#>>> a single spectral window during cleaning or using the cvel
+#>>> command. The NA imaging team strongly recommends the first option,
+#>>> unless the lines shift too much between executions to identify an
+#>>> common channel range for continuum subtraction. The code below uses
+#>>> cvel to regrid multiple spws associated with a single rest frequency
+#>>> into a single spw. You will want to use the same regridding
+#>>> parameters later when you clean to avoid clean regridding the image
+#>>> a second time.
 
 regridvis='source_calibrated_regrid.ms'
 veltype = 'radio' # Keep set to radio. See notes in imaging section.
@@ -135,17 +140,17 @@ cvel(vis=concatvis,
      outframe=outframe,
      veltype=veltype)
 
-# If you have multiple sets of spws that you wish you combine, just
-# repeat the above process with spw set to the other values.
+#>>> If you have multiple sets of spws that you wish you combine, just
+#>>> repeat the above process with spw set to the other values.
 
 
 ############################################
 # Rename and backup data set
 
-# If you have a single execution:
+#>>> If you have a single execution:
 # os.system('mv -i ' + sourcevis + ' ' + 'calibrated_final.ms')
 
-# If you have multiple executions:
+#>>> If you have multiple executions:
 # os.system('mv -i ' + concatvis + ' ' + 'calibrated_final.ms') # if just concated
 # os.system('mv -i ' + regridvis + ' ' + 'calibrated_final.ms') # if concated and regridded
 
@@ -155,63 +160,63 @@ cvel(vis=concatvis,
 # os.system('cp -ir calibrated_final.ms calibrated_final.ms.backup')
 
 
-# Please do not modify the final name of the file
-# ('calibrated_final.ms'). The packaging process requires a file with
-# this name.
+#>>> Please do not modify the final name of the file
+#>>> ('calibrated_final.ms'). The packaging process requires a file with
+#>>> this name.
 
-#--------------------------------------------------------------------------------------#
-#                             Imaging Template                                         #
-#--------------------------------------------------------------------------------------#
+#>>>--------------------------------------------------------------------------------------#
+#>>>                             Imaging Template                                         #
+#>>>--------------------------------------------------------------------------------------#
 
-# The commands below serve as a guide to best practices for imaging
-# ALMA data. It does not replace careful thought on your part while
-# imaging the data. You can remove or modify sections as necessary
-# depending on your particular imaging case (e.g., no
-# self-calibration, continuum only.) Please read the NA Imaging Guide
-# (https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts) for
-# more information.
+#>>> The commands below serve as a guide to best practices for imaging
+#>>> ALMA data. It does not replace careful thought on your part while
+#>>> imaging the data. You can remove or modify sections as necessary
+#>>> depending on your particular imaging case (e.g., no
+#>>> self-calibration, continuum only.) Please read the NA Imaging Guide
+#>>> (https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts) for
+#>>> more information.
 
-# Before imaging, you should use the commands the first section of
-# this script to prep the data for imaging.  The commands in both
-# sections should be able to be run as as standard Python
-# script. However, the cleaning in this script is done interactively
-# making the final product somewhat dependent on the individual doing
-# the clean -- please clean conservatively (i.e., don't box every
-# possible source). The final data products are the cleaned images
-# (*.image), the primary beam corrected images (*.pbcor), and the
-# primary beams (*.flux). These images should be converted to fits at
-# the end of the script (see example at the end of this file).
+#>>> Before imaging, you should use the commands the first section of
+#>>> this script to prep the data for imaging.  The commands in both
+#>>> sections should be able to be run as as standard Python
+#>>> script. However, the cleaning in this script is done interactively
+#>>> making the final product somewhat dependent on the individual doing
+#>>> the clean -- please clean conservatively (i.e., don't box every
+#>>> possible source). The final data products are the cleaned images
+#>>> (*.image), the primary beam corrected images (*.pbcor), and the
+#>>> primary beams (*.flux). These images should be converted to fits at
+#>>> the end of the script (see example at the end of this file).
 
-# This script (and the associated guide) are under active
-# development. Please contact Amanda Kepley (akepley@nrao.edu) if you
-# have any suggested changes or find any bugs that are almost
-# certainly there.
+#>>> This script (and the associated guide) are under active
+#>>> development. Please contact Amanda Kepley (akepley@nrao.edu) if you
+#>>> have any suggested changes or find any bugs that are almost
+#>>> certainly there.
 
 ##################################################
 # Create an Averaged Continuum MS
 
-# Continuum images can be sped up considerably by averaging the data
-# together to reduce overall volume.  Since the sensitivity of a
-# continuum image depends on its bandwidth, continuum images are
-# typically made by including as much bandwidth as possible in the
-# data while excluding any line emission. The following plotms command
-# pages through the spectral windows in a project allowing you to
-# identify channel ranges within spectral windows that do not include
-# *strong* line emission. You will form a continuum image by averaging
-# the line-free spws and/or channel ranges within spws. In most cases,
-# you will not need to create an image to select line channels,
-# although you can suggest this to the PI as a possible path for
-# future exploration in the README file for cases where there is
-# wide-spread line emission.
+#>>> Continuum images can be sped up considerably by averaging the data
+#>>> together to reduce overall volume.Since the sensitivity of a
+#>>> continuum image depends on its bandwidth, continuum images are
+#>>> typically made by including as much bandwidth as possible in the
+#>>> data while excluding any line emission. The following plotms command
+#>>> pages through the spectral windows in a project allowing you to
+#>>> identify channel ranges within spectral windows that do not include
+#>>> *strong* line emission. You will form a continuum image by averaging
+#>>> the line-free spws and/or channel ranges within spws. In most cases,
+#>>> you will not need to create an image to select line channels,
+#>>> although you can suggest this to the PI as a possible path for
+#>>> future exploration in the README file for cases where there is
+#>>> wide-spread line emission.
 
-# For a project with continuum target sensitivities, it is worth
-# checking the OT to see what continuum bandwidth the PI was
-# anticipating. In many cases, the continuum-only windows will be
-# specified in the OT, in general these have the broadest bandwidths
-# (~2GHz) with a small number of channels (128).  However, other
-# windows may be combined with these designated continuum windows to
-# increase the continuum sensitivity. In general, it is not necessary
-# to include narrow spectral windows (<250MHz) in the continuum image.
+#>>> For a project with continuum target sensitivities, it is worth
+#>>> checking the OT to see what continuum bandwidth the PI was
+#>>> anticipating. In many cases, the continuum-only windows will be
+#>>> specified in the OT, in general these have the broadest bandwidths
+#>>> (~2GHz) with a small number of channels (128).  However, other
+#>>> windows may be combined with these designated continuum windows to
+#>>> increase the continuum sensitivity. In general, it is not necessary
+#>>> to include narrow spectral windows (<250MHz) in the continuum image.
 
 finalvis='calibrated_final.ms' # This is your output ms from the data
                                # preparation script.
@@ -269,8 +274,8 @@ plotms(vis=contvis,xaxis='uvdist',yaxis='amp',coloraxis='spw')
 # #############################################
 # Image Parameters
 
-# You're now ready to image. Review the science goals in the OT and
-# set the relevant imaging parameters below. 
+#>>> You're now ready to image. Review the science goals in the OT and
+#>>> set the relevant imaging parameters below. 
 
 # source parameters
 # ------------------
@@ -289,28 +294,28 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 # image parameters.
 # ----------------
 
-# Generally, you want 5-8 cells (i.e., pixels) across the narrowest
-# part of the beam. You can estimate the beam size using the following
-# equation: 206265.0/(longest baseline in wavelengths).  To determine
-# the longest baseline, use plotms with xaxis='uvwave' and
-# yaxis='amp'. Divide the estimated beam size by five to eight to get
-# your cell size. It's better to error on the side of slightly too
-# many cells per beam than too few. Once you have made an image,
-# please re-assess the cell size based on the beam of the image.
+#>>> Generally, you want 5-8 cells (i.e., pixels) across the narrowest
+#>>> part of the beam. You can estimate the beam size using the following
+#>>> equation: 206265.0/(longest baseline in wavelengths).  To determine
+#>>> the longest baseline, use plotms with xaxis='uvwave' and
+#>>> yaxis='amp'. Divide the estimated beam size by five to eight to get
+#>>> your cell size. It's better to error on the side of slightly too
+#>>> many cells per beam than too few. Once you have made an image,
+#>>> please re-assess the cell size based on the beam of the image.
 
-# To determine the image size (i.e., the imsize parameter), first you
-# need to figure out whether the ms is a mosaic by either looking out
-# the output from listobs or checking the spatial setup in the OT. For
-# single fields, an imsize equal to the size of the primary beam is
-# usually sufficient. The ALMA 12m primary beam in arcsec scales as
-# 6300 / nu[GHz] and the ALMA 7m primary beam in arcsec scales as
-# 10608 / nu[GHz], where nu[GHz] is the sky frequency. However, if
-# there is significant point source and/or extended emission beyond
-# the edges of your initial images, you should increase the imsize to
-# incorporate more emission. For mosaics, you can get the imsize from
-# the spatial tab of the OT. The parameters "p length" and "q length"
-# specify the dimensions of the mosaic. If you're imaging a mosaic,
-# pad the imsize substantially to avoid artifacts.
+#>>> To determine the image size (i.e., the imsize parameter), first you
+#>>> need to figure out whether the ms is a mosaic by either looking out
+#>>> the output from listobs or checking the spatial setup in the OT. For
+#>>> single fields, an imsize equal to the size of the primary beam is
+#>>> usually sufficient. The ALMA 12m primary beam in arcsec scales as
+#>>> 6300 / nu[GHz] and the ALMA 7m primary beam in arcsec scales as
+#>>> 10608 / nu[GHz], where nu[GHz] is the sky frequency. However, if
+#>>> there is significant point source and/or extended emission beyond
+#>>> the edges of your initial images, you should increase the imsize to
+#>>> incorporate more emission. For mosaics, you can get the imsize from
+#>>> the spatial tab of the OT. The parameters "p length" and "q length"
+#>>> specify the dimensions of the mosaic. If you're imaging a mosaic,
+#>>> pad the imsize substantially to avoid artifacts.
 
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels.
@@ -324,11 +329,11 @@ nchan = 100  # number of channels. See science goals for appopriate value.
 outframe='bary' # velocity reference frame. See science goals.
 veltype='radio' # velocity type. See note below.
 
-# Note on veltype: We recommend keeping veltype set to radio,
-# regardless of the velocity frame listed the object in the OT. If the
-# sensitivity is defined using a velocity width, then the 'radio'
-# definition of the velocity frame is used regardless of the velocity
-# definition in the "source parameters" tab of the OT.
+#>>> Note on veltype: We recommend keeping veltype set to radio,
+#>>> regardless of the velocity frame listed the object in the OT. If the
+#>>> sensitivity is defined using a velocity width, then the 'radio'
+#>>> definition of the velocity frame is used regardless of the velocity
+#>>> definition in the "source parameters" tab of the OT.
 
 # imaging control
 # ----------------
@@ -372,11 +377,11 @@ clean(vis=contvis,
       interactive = True,
       imagermode = imagermode)
 
-# If interactively cleaning (interactive=True), then note number of
-# iterations at which you stop for the PI. This number will help the
-# PI replicate the delivered images.
+#>>> If interactively cleaning (interactive=True), then note number of
+#>>> iterations at which you stop for the PI. This number will help the
+#>>> PI replicate the delivered images.
 
-# Note RMS for PI. 
+#>>> Note RMS for PI. 
 
 # If you'd like to redo your clean, but don't want to make a new mask
 # use the following commands to save your original mask. This is an optional step.
@@ -387,11 +392,20 @@ clean(vis=contvis,
 ##############################################
 # Self-calibration on the continuum [OPTIONAL]
 
-# If the source continuum is bright, you can attempt to self-calibrate
-# on it.  The example here obtains solutions from the scan time to
-# down to times as short as per integration. Depending on the source,
-# you may not be able to find solution on timescales that short and
-# may need to adjust the solint parameter.
+#>>> Self-calibration solutions can be determined when a source exhibits
+#>>> a strong continuum emission, preferably near the phase
+#>>> center. Self-calibration can be attempted in cases where the
+#>>> expected rms is not reached on the continuum (for projects where the
+#>>> sensitivity is defined for the continuum) or the line data (for
+#>>> projects where the sensitivity is defined for the line data). It
+#>>> should not be tempted on 'partial' datasets (ACA and _TC datasets),
+#>>> and, in the interest of reducing the time required to image, is not
+#>>> recommended for datasets which do meet the rms requirement
+
+#>>> The example here obtains solutions from the scan time to
+#>>> down to times as short as per integration. Depending on the source,
+#>>> you may not be able to find solution on timescales that short and
+#>>> may need to adjust the solint parameter.
 
 contvis = 'calibrated_final_cont.ms'         
 contimagename = 'calibrated_final_cont_image'
@@ -419,11 +433,11 @@ clean(vis=contvis,
       interactive=True,
       imagermode=imagermode)
 
-# Note number of iterations performed.
+#>>> Note number of iterations performed.
 
 # per scan solution
 rmtables('pcal1')
-gaincal(vis=contvis,
+xgaincal(vis=contvis,
         caltable='pcal1',
         field=field,
         gaintype='T',
@@ -523,7 +537,7 @@ clean(vis=contvis,
       interactive=True,
       imagermode=imagermode)
 
-# Note number of iterations performed.
+#>>> Note number of iterations performed.
 
 # shorter solution
 rmtables('pcal3')
@@ -575,7 +589,7 @@ clean(vis=contvis,
       interactive=True,
       imagermode=imagermode)
 
-# Note number of iterations performed.
+#>>> Note number of iterations performed.
 
 rmtables('apcal')
 gaincal(vis=contvis,
@@ -628,8 +642,8 @@ clean(vis=contvis,
       interactive=True,
       imagermode=imagermode)
 
-# Note final RMS and number of clean iterations. Compare the RMS to
-# the RMS from the earlier, pre-selfcal image.
+#>>> Note final RMS and number of clean iterations. Compare the RMS to
+#>>> the RMS from the earlier, pre-selfcal image.
 
 # Save results of self-cal in a new ms
 split(vis=contvis,
@@ -639,10 +653,10 @@ split(vis=contvis,
 ########################################
 # Continuum Subtraction for Line Imaging
 
-# If you have observations that include both line and strong (>3 sigma
-# per final line image channel) continuum emission, you need to
-# subtract the continuum from the line data. You should not continuum
-# subtract if the line of interest is in absorption.
+#>>> If you have observations that include both line and strong (>3 sigma
+#>>> per final line image channel) continuum emission, you need to
+#>>> subtract the continuum from the line data. You should not continuum
+#>>> subtract if the line of interest is in absorption.
 
 fitspw = '0,1,2:0~1200;1500~3839,3:0~1200;1500~3839' # line-free channel for fitting continuum
 linespw = '2,3' # line spectral windows. You can subtract the continuum from multiple spectral line windows at once.
@@ -688,13 +702,13 @@ linevis=linevis+'.selfcal'
 ##############################################
 # Image line emission [REPEAT AS NECESSARY]
 
-# If you did an mstransform/cvel, use the same velocity parameters in
-# the clean that you did for the regridding. If you did not do an
-# mstransform and have multiple executions of a scheduling block,
-# select the spws with the same rest frequency using the spw parameter
-# (currently commented out below). DO NOT INCLUDE SPWS WITH DIFFERENT
-# REST FREQUENCIES IN THE SAME RUN OF CLEAN: THEY WILL SLOW DOWN
-# IMAGING CONSIDERABLY.
+#>>> If you did an mstransform/cvel, use the same velocity parameters in
+#>>> the clean that you did for the regridding. If you did not do an
+#>>> mstransform and have multiple executions of a scheduling block,
+#>>> select the spws with the same rest frequency using the spw parameter
+#>>> (currently commented out below). DO NOT INCLUDE SPWS WITH DIFFERENT
+#>>> REST FREQUENCIES IN THE SAME RUN OF CLEAN: THEY WILL SLOW DOWN
+#>>> IMAGING CONSIDERABLY.
 
 finalvis = 'calibrated_final.ms'
 # linevis = finalvis + '.contsub' # uncomment if continuum subtracted
@@ -712,15 +726,15 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
                         # line.
 # spw='1' # uncomment and replace with appropriate spw if necessary.
 
-# To specify a spws from multiple executions that had not been regridded using cvel, use
-#       import numpy as np
-#       spw = str.join(',',map(str,np.arange(0,n,nspw)))
-#
-# where n is the total number of windows x executions and nspw is the
-# number of spectral windows per execution. Note that the spectral
-# windows need to have the same order in all data sets for this code
-# to work. Add a constant offset (i.e., +1,+2,+3) to the array
-# generated by np.arange to get the other sets of windows.
+#>>> To specify a spws from multiple executions that had not been regridded using cvel, use
+#>>>       import numpy as np
+#>>>       spw = str.join(',',map(str,np.arange(0,n,nspw)))
+#>>>
+#>>> where n is the total number of windows x executions and nspw is the
+#>>> number of spectral windows per execution. Note that the spectral
+#>>> windows need to have the same order in all data sets for this code
+#>>> to work. Add a constant offset (i.e., +1,+2,+3) to the array
+#>>> generated by np.arange to get the other sets of windows.
 
 # If necessary, run the following commands to get rid of older clean
 # data.
@@ -752,9 +766,9 @@ clean(vis=linevis,
       robust=robust,
       imagermode=imagermode)
 
-# If interactively cleaning (interactive=True), then note number of
-# iterations at which you stop for the PI. This number will help the
-# PI replicate the delivered images.
+#>>> If interactively cleaning (interactive=True), then note number of
+#>>> iterations at which you stop for the PI. This number will help the
+#>>> PI replicate the delivered images.
 
 # If you'd like to redo your clean, but don't want to make a new mask
 # use the following commands to save your original mask. This is an
