@@ -1,33 +1,34 @@
 #>>> ======================================================================================#
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
-
+#>>>
 #>>> Updated: Thu Jun 25 13:33:01 EDT 2015
-
+#>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
-# and will be removed from the script delivered to the PI. If you
-# would like to include a comment that will be passed to the PI, begin
-# the line with a single '#', i.e., standard python comment syntax.
-
+#>>> and will be removed from the script delivered to the PI. If you
+#>>> would like to include a comment that will be passed to the PI, begin
+#>>> the line with a single '#', i.e., standard python comment syntax.
+#>>>
 #>>> Helpful tip: Use the commands %cpaste or %paste to copy and paste
 #>>> indented sections of code into the casa command line.
-
+#>>>
 #>>>--------------------------------------------------------------------------------------#
 #>>>                     Data Preparation                                                 #
 #>>> -------------------------------------------------------------------------------------#
-
+#>>>
 #>>> Below are some example commands for combining your data. All of
 #>>> these commands will not be relevant for all datasets, so think about
 #>>> what would be best for your data before running any commands. For
 #>>> more information, see the NA Imaging Guide
 #>>> (https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts).
-
+#>>>
 #>>> These commands should be run prior to undertaking any imaging.
-
+#>>>>
 #>>> The NA Imaging team is working on generating best
 #>>> practices for this step. Suggestions are welcome!  Please send to
 #>>> akepley@nrao.edu and she'll forward them on to the NA Imaging team.
-
+#>>>
+#>>>
 ########################################
 # Check CASA version
 
@@ -167,7 +168,7 @@ cvel(vis=concatvis,
 #>>>--------------------------------------------------------------------------------------#
 #>>>                             Imaging Template                                         #
 #>>>--------------------------------------------------------------------------------------#
-
+#>>>
 #>>> The commands below serve as a guide to best practices for imaging
 #>>> ALMA data. It does not replace careful thought on your part while
 #>>> imaging the data. You can remove or modify sections as necessary
@@ -175,7 +176,7 @@ cvel(vis=concatvis,
 #>>> self-calibration, continuum only.) Please read the NA Imaging Guide
 #>>> (https://staff.nrao.edu/wiki/bin/view/NAASC/NAImagingScripts) for
 #>>> more information.
-
+#>>>
 #>>> Before imaging, you should use the commands the first section of
 #>>> this script to prep the data for imaging.  The commands in both
 #>>> sections should be able to be run as as standard Python
@@ -186,7 +187,7 @@ cvel(vis=concatvis,
 #>>> (*.image), the primary beam corrected images (*.pbcor), and the
 #>>> primary beams (*.flux). These images should be converted to fits at
 #>>> the end of the script (see example at the end of this file).
-
+#>>>
 #>>> This script (and the associated guide) are under active
 #>>> development. Please contact Amanda Kepley (akepley@nrao.edu) if you
 #>>> have any suggested changes or find any bugs that are almost
@@ -208,7 +209,7 @@ cvel(vis=concatvis,
 #>>> although you can suggest this to the PI as a possible path for
 #>>> future exploration in the README file for cases where there is
 #>>> wide-spread line emission.
-
+#>>>
 #>>> For a project with continuum target sensitivities, it is worth
 #>>> checking the OT to see what continuum bandwidth the PI was
 #>>> anticipating. In many cases, the continuum-only windows will be
