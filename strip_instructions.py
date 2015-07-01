@@ -5,6 +5,10 @@ def strip_instructions(infilename='scriptForImaging_template.py', outfilename='s
     """
     
 
+    if infilename == outfilename:
+        print "set infilename and outfilename to different values!"
+        return
+
     infile = open(infilename,'r')
     outfile = open(outfilename, 'w')
 
