@@ -15,7 +15,6 @@ def strip_instructions(infilename, outfilename):
     import shutil
     
     if infilename == outfilename:
-        # TESTING -- CU
         print "infilename equals outfilename!"
 
 	backup='scripForImaging_backup.py'
