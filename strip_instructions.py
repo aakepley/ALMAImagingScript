@@ -1,26 +1,35 @@
-def strip_instructions(infilename, outfilename):
+def strip_instructions(infilename):
 
     """
-    Remove the instructions to the data imager from the scriptForImaging_template.py
+    This function removes the instructions to the data imager from the
+    scriptForImaging_template.py. It takes a string giving the name of
+    the input file and will produce a backup file with the original
+    script and a new file with the instructions to the data imager
+    removed.
+    
+    Example: 
+	execfile('strip_instructions')
+	strip_instructions('scriptForImaging.py') 
     """
     
     import shutil
-    
-    if infilename == outfilename:
-        # TESTING -- CU
-        print "infilename equals outfilename!"
-        print "Creating a backup of scripForImaging.py"
-        backup=infilename+'.backup.py'
-        shutil.copyfile(infilename,backup)
-        
-        tempfilename = infilename+'.temp'
-        tempfile = shutil.move(infilename,tempfilename)
-        
-        infilename=temfile
-    
+    import os.path
+
+    backupfilename = infilename + '.backup'
+
+    if os.path.isfile(backupfilename):
+        print "Backup file exists! Stopping."
+        return
+    else:
+        print "Moving " + infilename + " to " + backupfilename +"."
+        shutil.move(infilename,backupfilename)
+        outfilename = infilename
+        infilename = backupfilename
+         
     infile = open(infilename,'r')
     outfile = open(outfilename, 'w')
 
+    print "Stripping instructions"
     for line in infile:
         if line.startswith('#>>>'):
             continue
@@ -29,16 +38,3 @@ def strip_instructions(infilename, outfilename):
 
     infile.close()
     outfile.close()
-    
-help(strip_instructions)
-strip_instructions()
-    This function runs within CASA.
-    Takes in two string variables infilename and outfilename.
-    It is perferable that the file names are not the same.
-    
-    Example: From within CASA
-        execfile('strip_instructions')
-        strip_instructions('scriptForImaging_template.py','scriptForImaging.py') 
-        
-
-    

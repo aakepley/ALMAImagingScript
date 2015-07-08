@@ -1,37 +1,35 @@
-def strip_instructions(infilename, outfilename):
+def strip_instructions(infilename):
 
     """
-    This function runs within CASA.
-
-    It removes the instructions to the data imager from the scriptForImaging_template.py
-    Takes in two string variables infilename and outfilename.
-    It is perferable that the file names are not the same.
+    This function removes the instructions to the data imager from the
+    scriptForImaging_template.py. It takes a string giving the name of
+    the input file and will produce a backup file with the original
+    script and a new file with the instructions to the data imager
+    removed.
     
-    Example: From within CASA
+    Example: 
 	execfile('strip_instructions')
-	strip_instructions('scriptForImaging_template.py','scriptForImaging.py') 
+	strip_instructions('scriptForImaging.py') 
     """
     
     import shutil
-    
-    if infilename == outfilename:
-        print "infilename equals outfilename!"
+    import os.path
 
-	backup='scripForImaging_backup.py'
-        print "Creating a backup of scripForImaging.py: "+backup
-        shutil.copyfile(infilename,backup)
-        
-        tempfilename = 'scripForImaging_input.py'
-        shutil.copyfile(infilename,tempfilename)
-        
-        infilename=tempfilename
-   
-    print "New input file name: "+infilename
-    print "Output file name: "+outfilename
- 
+    backupfilename = infilename + '.backup'
+
+    if os.path.isfile(backupfilename):
+        print "Backup file exists! Stopping."
+        return
+    else:
+        print "Moving " + infilename + " to " + backupfilename +"."
+        shutil.move(infilename,backupfilename)
+        outfilename = infilename
+        infilename = backupfilename
+         
     infile = open(infilename,'r')
     outfile = open(outfilename, 'w')
 
+    print "Stripping instructions"
     for line in infile:
         if line.startswith('#>>>'):
             continue
