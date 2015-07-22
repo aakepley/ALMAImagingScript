@@ -82,7 +82,7 @@ concat(vis=vislist,
 # Splitting off science target data
 
 #>>> Uncomment following line for single executions
-# concatvis = vis
+# concatvis = vislist
 
 #>>> Uncomment following line for multiple executions
 # concatvis='calibrated.ms'
@@ -440,7 +440,7 @@ clean(vis=contvis,
 
 # per scan solution
 rmtables('pcal1')
-xgaincal(vis=contvis,
+gaincal(vis=contvis,
         caltable='pcal1',
         field=field,
         gaintype='T',
