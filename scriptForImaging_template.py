@@ -2,7 +2,8 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Jun 25 13:33:01 EDT 2015
+#>>> Updated: Wed Jul 22 14:08:54 EDT 2015
+
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -57,30 +58,6 @@ for vis in vislist:
     tb.removerows(a)
     tb.close()
 
-
-###################################
-# Splitting off science target data
-
-for vis in vislist:
-    listobs(vis=vis)
-
-    #>>> INCLUDE LISTOBS OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
-
-#>>> Doing the split.  If multiple data sets were rescaled using
-#>>> scriptForFluxCalibration.py, need to get datacolumn='corrected'
-
-for vis in vislist:
-    sourcevis=vis+'.source'
-    rmtables(sourcevis)
-    os.system('rm -rf ' + sourcevis + '.flagversions')
-    split(vis=vis,
-          intent='*TARGET*', # split off the target sources
-          outputvis=sourcevis,
-          datacolumn='data')
-    # Check that split worked as desired.
-    listobs(vis=sourcevis) 
-
-
 ###############################################################
 # Combining Measurement Sets from Multiple Executions 
 
@@ -94,13 +71,39 @@ for vis in vislist:
 # multiple spws associated with a single rest frequency will not be
 # regridded to a single spectral window in the ms.
 
-sourcevislist = glob.glob("*.ms.split.cal.source")
-concatvis='source_calibrated_concat.ms'
+concatvis='calibrated.ms'
 
 rmtables(concatvis)
 os.system('rm -rf ' + concatvis + '.flagversions')
-concat(vis=sourcevislist,
+concat(vis=vislist,
        concatvis=concatvis)
+
+###################################
+# Splitting off science target data
+
+#>>> Uncomment following line for single executions
+# concatvis = vis
+
+#>>> Uncomment following line for multiple executions
+# concatvis='calibrated.ms'
+
+listobs(vis=concatvis)
+
+#>>> INCLUDE LISTOBS OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
+
+#>>> Doing the split.  If multiple data sets were rescaled using
+#>>> scriptForFluxCalibration.py, need to get datacolumn='corrected'
+
+sourcevis='calibrated_source.ms'
+rmtables(sourcevis)
+os.system('rm -rf ' + sourcevis + '.flagversions')
+split(vis=concatvis,
+      intent='*TARGET*', # split off the target sources
+      outputvis=sourcevis,
+      datacolumn='data')
+
+# Check that split worked as desired.
+listobs(vis=sourcevis) 
 
 ###############################################################
 # Regridding spectral windows [OPTIONAL]
@@ -115,7 +118,8 @@ concat(vis=sourcevislist,
 #>>> parameters later when you clean to avoid clean regridding the image
 #>>> a second time.
 
-regridvis='source_calibrated_regrid.ms'
+sourcevis='calibrated_source.ms'
+regridvis='calibrated_source_regrid.ms'
 veltype = 'radio' # Keep set to radio. See notes in imaging section.
 width = '0.23km/s' # see science goals in the OT
 nchan = -1 # leave this as the default
@@ -129,7 +133,7 @@ spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to
 rmtables(regridvis)
 os.system('rm -rf ' + regridvis + '.flagversions')
     
-cvel(vis=concatvis,
+cvel(vis=sourcevis,
      field=field,
      outputvis=regridvis,
      spw=spw,
@@ -148,18 +152,16 @@ cvel(vis=concatvis,
 ############################################
 # Rename and backup data set
 
-#>>> If you have a single execution:
+#>>> If you haven't regridded:
 # os.system('mv -i ' + sourcevis + ' ' + 'calibrated_final.ms')
 
-#>>> If you have multiple executions:
-# os.system('mv -i ' + concatvis + ' ' + 'calibrated_final.ms') # if just concated
-# os.system('mv -i ' + regridvis + ' ' + 'calibrated_final.ms') # if concated and regridded
+#>>> If you have regridded:
+# os.system('mv -i ' + regridvis + ' ' + 'calibrated_final.ms') 
 
 # At this point you should create a backup of your final data set in
 # case the ms you are working with gets corrupted by clean. 
 
 # os.system('cp -ir calibrated_final.ms calibrated_final.ms.backup')
-
 
 #>>> Please do not modify the final name of the file
 #>>> ('calibrated_final.ms'). The packaging process requires a file with
