@@ -2,8 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Wed Jul 22 16:29:12 EDT 2015
-
+#>>> Updated: Thu Jul 30 13:57:01 EDT 2015
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -82,7 +81,7 @@ concat(vis=vislist,
 # Splitting off science target data
 
 #>>> Uncomment following line for single executions
-# concatvis = vislist
+# concatvis = vislist[0]
 
 #>>> Uncomment following line for multiple executions
 # concatvis='calibrated.ms'
@@ -381,8 +380,10 @@ clean(vis=contvis,
       imagermode = imagermode)
 
 #>>> If interactively cleaning (interactive=True), then note number of
-#>>> iterations at which you stop for the PI. This number will help the
-#>>> PI replicate the delivered images.
+#>>> iterations at which you stop for the PI. This number will help
+#>>> the PI replicate the delivered images. Do not clean empty
+#>>> images. Just click the red X to stop the interactive and note the
+#>>> RMS.
 
 #>>> Note RMS for PI. 
 
@@ -715,7 +716,7 @@ linevis=linevis+'.selfcal'
 
 finalvis = 'calibrated_final.ms'
 # linevis = finalvis + '.contsub' # uncomment if continuum subtracted
-# linevis = linvis + '.selfcal' # uncommment if self-calibrated
+# linevis = linevis + '.selfcal' # uncommment if self-calibrated
 
 sourcename ='n253' # name of source
 linename = 'CO10' # name of transition (see science goals in OT for name) 
@@ -771,7 +772,9 @@ clean(vis=linevis,
 
 #>>> If interactively cleaning (interactive=True), then note number of
 #>>> iterations at which you stop for the PI. This number will help the
-#>>> PI replicate the delivered images.
+#>>> PI replicate the delivered images. Do not clean empty
+#>>> images. Just click the red X to stop the interactive and note the
+#>>> RMS.
 
 # If you'd like to redo your clean, but don't want to make a new mask
 # use the following commands to save your original mask. This is an
