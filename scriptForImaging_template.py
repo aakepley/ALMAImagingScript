@@ -2,7 +2,8 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Jul 30 13:57:01 EDT 2015
+#>>> Updated: Thu Aug 13 16:34:37 EDT 2015
+
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -34,8 +35,8 @@
 
 import re
 
-if (re.search('^4.2', casadef.casa_version) or re.search('^4.3', casadef.casa_version))  == None:
- sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT: 4.2 or 4.3')
+if (re.search('^4.2', casadef.casa_version) or re.search('^4.3', casadef.casa_version) or re.search('^4.4', casadef.casa_version))  == None:
+ sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT: 4.2, 4.3, or 4.4')
 
 ########################################
 # Getting a list of ms files to image
@@ -86,9 +87,9 @@ concat(vis=vislist,
 #>>> Uncomment following line for multiple executions
 # concatvis='calibrated.ms'
 
-listobs(vis=concatvis)
+vishead(vis=concatvis)
 
-#>>> INCLUDE LISTOBS OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
+#>>> INCLUDE vishead OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
 
 #>>> Doing the split.  If multiple data sets were rescaled using
 #>>> scriptForFluxCalibration.py, need to get datacolumn='corrected'
@@ -102,7 +103,7 @@ split(vis=concatvis,
       datacolumn='data')
 
 # Check that split worked as desired.
-listobs(vis=sourcevis) 
+vishead(vis=sourcevis) 
 
 ###############################################################
 # Regridding spectral windows [OPTIONAL]
@@ -227,8 +228,13 @@ finalvis='calibrated_final.ms' # This is your output ms from the data
 plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
        ydatacolumn='data',
        avgtime='1e8', avgscan=True, avgchannel='2', # you should only lightly average over frequency
-#       avgbaseline=True, # try if you don't see anything with the time and frequency averaging
        iteraxis='spw' )
+
+
+#>>> If you don't see any obvious lines in the above plot, you may to try
+#>>> to set avgbaseline=True with uvrange (e.g., <100m). Limiting the
+#>>> uvrange to the short baselines greatly improves the visibility of
+#>>> lines with extended emission.
 
 
 # Set spws to be used to form continuum
@@ -258,7 +264,7 @@ os.system('rm -rf ' + contvis + '.flagversions')
 split(vis=finalvis,
       spw=contspws,      
       outputvis=contvis,
-      width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
+      width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs or vishead to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
       datacolumn='data')
 
 # Note: There is a bug in split that does not average the data
@@ -303,11 +309,15 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 #>>> yaxis='amp'. Divide the estimated beam size by five to eight to get
 #>>> your cell size. It's better to error on the side of slightly too
 #>>> many cells per beam than too few. Once you have made an image,
-#>>> please re-assess the cell size based on the beam of the image.
+#>>> please re-assess the cell size based on the beam of the image. You can
+#>>> check your cell size using  au.pickCellSize('calibrated_final.ms'). Note
+#>>> however, that this routine does not take into account the projection of
+#>>> the baseline onto the sky, so the plotms method described above is overall
+#>>> more accurate.
 
 #>>> To determine the image size (i.e., the imsize parameter), first you
 #>>> need to figure out whether the ms is a mosaic by either looking out
-#>>> the output from listobs or checking the spatial setup in the OT. For
+#>>> the output from listobs/vishead or checking the spatial setup in the OT. For
 #>>> single fields, an imsize equal to the size of the primary beam is
 #>>> usually sufficient. The ALMA 12m primary beam in arcsec scales as
 #>>> 6300 / nu[GHz] and the ALMA 7m primary beam in arcsec scales as
@@ -319,6 +329,9 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 #>>> specify the dimensions of the mosaic. If you're imaging a mosaic,
 #>>> pad the imsize substantially to avoid artifacts.
 
+#>>> Note that for a single field you can check your image size using
+#>>> au.pickCellSize('calibrated_final.ms', imsize=True)
+
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels.
 
@@ -327,7 +340,7 @@ imsize = [128,128] # size of image in pixels.
 
 start='-100km/s' # start velocity. See science goals for appropriate value.
 width='2km/s' # velocity width. See science goals.
-nchan = 100  # number of channels. See science goals for appopriate value.
+nchan = 100  # number of channels. See science goals for appropriate value.
 outframe='bary' # velocity reference frame. See science goals.
 veltype='radio' # velocity type. See note below.
 
@@ -414,7 +427,14 @@ clean(vis=contvis,
 contvis = 'calibrated_final_cont.ms'         
 contimagename = 'calibrated_final_cont_image'
 
-refant = 'DV09' # reference antenna. Choose one that's in the array. The tasks plotants and listobs can tell you what antennas are in the array.
+refant = 'DV09' # reference antenna.
+
+#>>> Choose a reference antenna that's in the array. The tasks plotants
+#>>> and listobs/vishead can tell you what antennas are in the array. For
+#>>> data sets with multiple executions, you will want to choose an antenna
+#>>> that's present in all the executions. The task au.commonAntennas()
+#>>> can help with this.
+
 spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral windows. Generally an array of n zeroes, where n is the number of spectral windows in the data sets.
 
 # shallow clean on the continuum
@@ -715,8 +735,10 @@ linevis=linevis+'.selfcal'
 #>>> IMAGING CONSIDERABLY.
 
 finalvis = 'calibrated_final.ms'
+# linevis = finalvis # uncomment if you neither continuum subtracted nor self-calibrated your data.
 # linevis = finalvis + '.contsub' # uncomment if continuum subtracted
-# linevis = linevis + '.selfcal' # uncommment if self-calibrated
+# linevis = finalvis + '.contsub.selfcal' # uncommment if both continuum subtracted and self-calibrated
+# linevis = finalvis + '.selfcal' # uncomment if just self-calibrated (no continuum subtraction)
 
 sourcename ='n253' # name of source
 linename = 'CO10' # name of transition (see science goals in OT for name) 
