@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Sep  3 14:27:39 EDT 2015
+#>>> Updated: Thu Sep  3 15:42:44 EDT 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -467,6 +467,7 @@ clean(vis=contvis,
       niter=niter, 
       threshold=threshold, 
       interactive=True,
+      usescratch=True, # needed for 4.3 and 4.4 (and maybe 4.5)
       imagermode=imagermode)
 
 #>>> Note number of iterations performed.
@@ -519,6 +520,7 @@ clean(vis=contvis,
       niter=niter, 
       threshold=threshold, 
       interactive=True,
+      usescratch=True, # needed for 4.3 and 4.4 (and maybe 4.5)
       imagermode=imagermode)
 
 # Note number of iterations performed.
@@ -571,6 +573,7 @@ clean(vis=contvis,
       niter=niter, 
       threshold=threshold, 
       interactive=True,
+      usescratch=True, # needed for 4.3 and 4.4 (and maybe 4.5)
       imagermode=imagermode)
 
 #>>> Note number of iterations performed.
@@ -623,6 +626,7 @@ clean(vis=contvis,
       niter=niter, 
       threshold=threshold, 
       interactive=True,
+      usescratch=True, # needed for 4.3 and 4.4 (and maybe 4.5)
       imagermode=imagermode)
 
 #>>> Note number of iterations performed.
@@ -676,6 +680,7 @@ clean(vis=contvis,
       niter=niter, 
       threshold=threshold, 
       interactive=True,
+      usescratch=True, # needed for 4.3 and 4.4 (and maybe 4.5)
       imagermode=imagermode)
 
 #>>> Note final RMS and number of clean iterations. Compare the RMS to
