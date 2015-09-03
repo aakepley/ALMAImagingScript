@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Aug 13 16:34:37 EDT 2015
+#>>> Updated: Thu Sep  3 14:27:39 EDT 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -245,6 +245,9 @@ contspws = '0,1,2,3'
 flagmanager(vis=finalvis,mode='save',
             versionname='before_cont_flags')
 
+## UNCOMMENT ONLY IF YOU ARE USING 4.4 TO IMAGE THE DATA (CURRENTLY ONLY MANUAL REDUCTIONS)
+# initweights(vis=finalvis,wtmode='weight',dowtsp=True)
+
 # Flag the "line channels"
 flagchannels='2:1201~2199,3:1201~2199' # In this example , spws 2&3 have a line between channels 1201 and
 # 2199 and spectral windows 0 and 1 are line-free.
@@ -261,16 +264,28 @@ plotms(vis=finalvis,yaxis='amp',xaxis='channel',
 contvis='calibrated_final_cont.ms'
 rmtables(contvis)
 os.system('rm -rf ' + contvis + '.flagversions')
-split(vis=finalvis,
-      spw=contspws,      
-      outputvis=contvis,
-      width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs or vishead to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
-      datacolumn='data')
+
+# IF YOU ARE USING CASA VERSION 4.4 TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
+# split2(vis=finalvis,
+#      spw=contspws,      
+#      outputvis=contvis,
+#      width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs or vishead to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
+#      datacolumn='data')
+
+# IF YOU ARE USING CASA VERSION 4.3 AND BELOW TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRIATE.
+# split(vis=finalvis,
+#       spw=contspws,      
+#       outputvis=contvis,
+#       width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs or vishead to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
+#       datacolumn='data')
 
 # Note: There is a bug in split that does not average the data
 # properly if the width is set to a value larger than the number of
 # channels in an SPW. Specifying the width of each spw (as done above)
 # is necessary for producing properly weighted data.
+
+# IN CASA 4.4, you should check the weights. You will need to change antenna and field to appropriate values
+# plotms(vis=contvis, yaxis='wtsp',xaxis='freq',spw='',antenna='DA42',field='0')
 
 # If you flagged any line channels, restore the previous flags
 flagmanager(vis=finalvis,mode='restore',
@@ -338,9 +353,6 @@ imsize = [128,128] # size of image in pixels.
 # velocity parameters
 # -------------------
 
-start='-100km/s' # start velocity. See science goals for appropriate value.
-width='2km/s' # velocity width. See science goals.
-nchan = 100  # number of channels. See science goals for appropriate value.
 outframe='bary' # velocity reference frame. See science goals.
 veltype='radio' # velocity type. See note below.
 
@@ -750,8 +762,13 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
                         # frequency (nu_rest/(1+z)) instead of the
                         # rest frequency of the
                         # line.
+
 # spw='1' # uncomment and replace with appropriate spw if necessary.
 
+start='-100km/s' # start velocity. See science goals for appropriate value.
+width='2km/s' # velocity width. See science goals.
+nchan = 100  # number of channels. See science goals for appropriate value.
+x
 #>>> To specify a spws from multiple executions that had not been regridded using cvel, use
 #>>>       import numpy as np
 #>>>       spw = str.join(',',map(str,np.arange(0,n,nspw)))
