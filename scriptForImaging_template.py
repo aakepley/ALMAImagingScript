@@ -691,6 +691,9 @@ split(vis=contvis,
       outputvis=contvis+'.selfcal',
       datacolumn='corrected')
 
+# reset the corrected data column in the  ms to the original calibration 
+clearcal(vis=contvis)
+
 ########################################
 # Continuum Subtraction for Line Imaging
 
@@ -739,6 +742,8 @@ split(vis=linevis,
       datacolumn='corrected')
 linevis=linevis+'.selfcal'
 
+# reset the corrected data column in the  ms to the original calibration 
+clearcal(linevis)
 
 ##############################################
 # Image line emission [REPEAT AS NECESSARY]
