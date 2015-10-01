@@ -2,7 +2,8 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Sep  3 15:42:44 EDT 2015
+#>>> Updated: Thu Oct  1 10:39:37 EDT 2015
+
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -199,7 +200,7 @@ cvel(vis=sourcevis,
 # Create an Averaged Continuum MS
 
 #>>> Continuum images can be sped up considerably by averaging the data
-#>>> together to reduce overall volume.Since the sensitivity of a
+#>>> together to reduce overall volume. Since the sensitivity of a
 #>>> continuum image depends on its bandwidth, continuum images are
 #>>> typically made by including as much bandwidth as possible in the
 #>>> data while excluding any line emission. The following plotms command
@@ -227,9 +228,15 @@ finalvis='calibrated_final.ms' # This is your output ms from the data
 # Use plotms to identify line and continuum spectral windows
 plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
        ydatacolumn='data',
-       avgtime='1e8', avgscan=True, avgchannel='2', # you should only lightly average over frequency
+       avgtime='1e8', avgscan=True, avgchannel='1', 
        iteraxis='spw' )
 
+
+#>>> In CASA 4.4 and higher, the behavior of the avgchannel parameter
+#>>> has changed. Now when you plot binned channels, plotms displays
+#>>> the "bin" number rather than the average channel number of each
+#>>> bin. Amanda is trying to get this behavior changed back to
+#>>> something more sensible
 
 #>>> If you don't see any obvious lines in the above plot, you may to try
 #>>> to set avgbaseline=True with uvrange (e.g., <100m). Limiting the
@@ -345,7 +352,9 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 #>>> pad the imsize substantially to avoid artifacts.
 
 #>>> Note that for a single field you can check your image size using
-#>>> au.pickCellSize('calibrated_final.ms', imsize=True)
+#>>> au.pickCellSize('calibrated_final.ms', imsize=True). This task does not
+#>>> into account the projection of the baselines, so the plotms method is
+#>>> more accurate.
 
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels.
