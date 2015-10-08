@@ -2,8 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Oct  1 10:39:37 EDT 2015
-
+#>>> Updated: Thu Oct  8 13:57:51 EDT 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -749,10 +748,10 @@ applycal(vis=linevis,
 split(vis=linevis,
       outputvis=linevis+'.selfcal',
       datacolumn='corrected')
-linevis=linevis+'.selfcal'
-
 # reset the corrected data column in the  ms to the original calibration 
 clearcal(linevis)
+
+linevis=linevis+'.selfcal'
 
 ##############################################
 # Image line emission [REPEAT AS NECESSARY]
