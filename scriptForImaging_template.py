@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Oct  8 13:57:51 EDT 2015
+#>>> Updated: Thu Oct 15 16:32:51 EDT 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -224,7 +224,12 @@ cvel(vis=sourcevis,
 finalvis='calibrated_final.ms' # This is your output ms from the data
                                # preparation script.
 
-# Use plotms to identify line and continuum spectral windows
+# Use plotms to identify line and continuum spectral windows.
+#>>> If you have a project with multiple fields, you will want to run
+#>>> the following plotms command separately for each source. If the
+#>>> spectra for each field are significantly different from each other,
+#>>> it may be necessary to make separate average continuum  and
+#>>> continuum-subtracted measurement sets for each field.
 plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
        ydatacolumn='data',
        avgtime='1e8', avgscan=True, avgchannel='1', 
@@ -456,6 +461,11 @@ refant = 'DV09' # reference antenna.
 #>>> can help with this.
 
 spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral windows. Generally an array of n zeroes, where n is the number of spectral windows in the data sets.
+
+# save initial flags in case you don't like the final
+# self-calibration. The task applycal will flag data that doesn't have
+# solutions.
+flagmanager(vis=contvis,mode='save',versionname='before_selfcal',merge='replace')
 
 # shallow clean on the continuum
 
@@ -699,8 +709,17 @@ split(vis=contvis,
       outputvis=contvis+'.selfcal',
       datacolumn='corrected')
 
-# reset the corrected data column in the  ms to the original calibration 
+# reset the corrected data column in the  ms to the original calibration.
+
+#>>> This can also be used to return your ms to it's original
+#>>> pre-self-cal state if you are unhappy with your self-calibration.
 clearcal(vis=contvis)
+
+#>>> The applycal task will automatically flag data without good
+#>>> gaincal solutions. If you are unhappy with your self-cal and wish to
+#>>> return the flags to their original state, run the following command
+#>>> flagmanager(vis=contvis, mode='restore',versionname='before_selfcal')
+
 
 ########################################
 # Continuum Subtraction for Line Imaging
@@ -735,6 +754,10 @@ linevis = finalvis+'.contsub'
 # Apply continuum self-calibration to line data [OPTIONAL]
 
 linevis = finalvis+'.contsub'
+
+# save original flags in case you don't like the self-cal
+flagmanager(vis=linevis,mode='save',versionname='before_selfcal',merge='replace')
+
 spwmap_line = [0] # Mapping self-calibration solution to the individual line spectral windows.
 applycal(vis=linevis,
          spwmap=[spwmap_line, spwmap_line], # select which spws to apply the solutions for each table
@@ -748,8 +771,16 @@ applycal(vis=linevis,
 split(vis=linevis,
       outputvis=linevis+'.selfcal',
       datacolumn='corrected')
-# reset the corrected data column in the  ms to the original calibration 
+
+# reset the corrected data column in the  ms to the original calibration
+#>>> This can also be used to return your ms to it's original
+#>>> pre-self-cal state if you are unhappy with your self-calibration.
 clearcal(linevis)
+
+#>>> The applycal task will automatically flag data without good
+#>>> gaincal solutions. If you are unhappy with your self-cal and wish to
+#>>> return the flags to their original state, run the following command
+#>>> flagmanager(vis=linevis, mode='restore',versionname='before_selfcal')
 
 linevis=linevis+'.selfcal'
 
