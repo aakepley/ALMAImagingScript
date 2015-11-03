@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Oct 15 16:32:51 EDT 2015
+#>>> Updated: Tue Nov  3 13:48:03 EST 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -60,6 +60,10 @@ for vis in vislist:
 
 ###############################################################
 # Combining Measurement Sets from Multiple Executions 
+
+#>>> DO NOT DO THIS IF YOU HAVE MANUALLY CALIBRATED YOUR DATA. THE
+#>>> COMBINATION HAS ALREADY BEEN DONE AS PART OF THE MANUAL
+#>>> CALIBRATION.
 
 # If you have multiple executions, you will want to combine the
 # scheduling blocks into a single ms using concat for ease of imaging
@@ -353,7 +357,9 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 #>>> incorporate more emission. For mosaics, you can get the imsize from
 #>>> the spatial tab of the OT. The parameters "p length" and "q length"
 #>>> specify the dimensions of the mosaic. If you're imaging a mosaic,
-#>>> pad the imsize substantially to avoid artifacts.
+#>>> pad the imsize substantially to avoid artifacts. Note that the imsize
+#>>> parameter is in PIXELS, not arcsec, so you will need to divide the image size
+#>>> in arcsec by the pixel size to determine a value for imsize.
 
 #>>> Note that for a single field you can check your image size using
 #>>> au.pickCellSize('calibrated_final.ms', imsize=True). This task does not
@@ -519,7 +525,8 @@ applycal(vis=contvis,
          gaintable=['pcal1'],
          gainfield='',
          calwt=F, 
-         flagbackup=F)
+         flagbackup=F,
+         interp='linearperobs')
 
 # clean deeper
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
@@ -572,7 +579,8 @@ applycal(vis=contvis,
          gaintable=['pcal2'],
          gainfield='',
          calwt=F, 
-         flagbackup=F)
+         flagbackup=F,
+         interp='linearperobs')
 
 # clean deeper
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
@@ -625,7 +633,8 @@ applycal(vis=contvis,
          gaintable=['pcal3'],
          gainfield='',
          calwt=F, 
-         flagbackup=F)
+         flagbackup=F,
+         interp='linearperobs')
 
 # do the amplitude self-calibration.
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
@@ -679,7 +688,8 @@ applycal(vis=contvis,
          gaintable=['pcal3','apcal'],
          gainfield='',
          calwt=F,
-         flagbackup=F)
+         flagbackup=F,
+         interp='linearperobs')
 
 # Make amplitude and phase self-calibrated image.
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
@@ -817,7 +827,7 @@ restfreq='115.27120GHz' # Typically the rest frequency of the line of
 start='-100km/s' # start velocity. See science goals for appropriate value.
 width='2km/s' # velocity width. See science goals.
 nchan = 100  # number of channels. See science goals for appropriate value.
-x
+
 #>>> To specify a spws from multiple executions that had not been regridded using cvel, use
 #>>>       import numpy as np
 #>>>       spw = str.join(',',map(str,np.arange(0,n,nspw)))
@@ -880,7 +890,9 @@ myimages = glob.glob("*.image")
 
 rmtables('*.pbcor')
 for image in myimages:
-    impbcor(imagename=image, pbimage=image.replace('.image','.flux'), outfile = image.replace('.image','.pbcor'))
+    pbimage = image.rsplit('.',1)[0]+'.flux'
+    outfile = image.rsplit('.',1)[0]+'.pbcor'
+    impbcor(imagename=image, pbimage=pbimage, outfile = outfile)
 
 ##############################################
 # Export the images
