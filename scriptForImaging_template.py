@@ -397,7 +397,7 @@ threshold = '0.0mJy'
 
 # Set the ms and continuum image name.
 contvis = 'calibrated_final_cont.ms'         
-contimagename = 'calibrated_final_cont_image'
+contimagename = 'calibrated_final_cont'
 
 # If necessary, run the following commands to get rid of older clean
 # data.
@@ -456,7 +456,7 @@ clean(vis=contvis,
 #>>> may need to adjust the solint parameter.
 
 contvis = 'calibrated_final_cont.ms'         
-contimagename = 'calibrated_final_cont_image'
+contimagename = 'calibrated_final_cont'
 
 refant = 'DV09' # reference antenna.
 
@@ -813,7 +813,7 @@ finalvis = 'calibrated_final.ms'
 
 sourcename ='n253' # name of source
 linename = 'CO10' # name of transition (see science goals in OT for name) 
-lineimagename = sourcename+'_'+linename+'_image' # name of line image
+lineimagename = sourcename+'_'+linename # name of line image
 
 restfreq='115.27120GHz' # Typically the rest frequency of the line of
                         # interest. If the source has a significant
