@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Tue Nov  3 13:48:03 EST 2015
+#>>> Updated: Thu Nov 12 13:08:47 EST 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -49,14 +49,18 @@ vislist=glob.glob('*.ms.split.cal')
 # Removing pointing table
 
 # This step removes the pointing table from the data to avoid
-# a bug with mosaics in CASA 4.2.2
+# a bug with mosaics in CASA 4.2.2.
 
-for vis in vislist:
-    tb.open( vis + '/POINTING',
-            nomodify = False)
-    a = tb.rownumbers()
-    tb.removerows(a)
-    tb.close()
+# DO NOT DO THIS FOR CASA 4.5 AND GREATER! DELETING THE POINTING TABLE
+# WILL CAUSE ISSUES FOR OTF MOSAICS.
+
+if casadef.casa_version < '4.5.0'
+    for vis in vislist:
+        tb.open( vis + '/POINTING',
+                 nomodify = False)
+        a = tb.rownumbers()
+        tb.removerows(a)
+        tb.close()
 
 ###############################################################
 # Combining Measurement Sets from Multiple Executions 
@@ -898,10 +902,6 @@ for image in myimages:
 # Export the images
 
 import glob
-
-myimages = glob.glob("*.image")
-for image in myimages:
-    exportfits(imagename=image, fitsimage=image+'.fits',overwrite=True)
 
 myimages = glob.glob("*.pbcor")
 for image in myimages:
