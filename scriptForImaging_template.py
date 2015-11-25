@@ -2,7 +2,8 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Nov 12 13:08:47 EST 2015
+#>>> Updated: Fri Nov 20 11:48:43 EST 2015
+
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -54,7 +55,7 @@ vislist=glob.glob('*.ms.split.cal')
 # DO NOT DO THIS FOR CASA 4.5 AND GREATER! DELETING THE POINTING TABLE
 # WILL CAUSE ISSUES FOR OTF MOSAICS.
 
-if casadef.casa_version < '4.5.0'
+if casadef.casa_version < '4.5.0':
     for vis in vislist:
         tb.open( vis + '/POINTING',
                  nomodify = False)
