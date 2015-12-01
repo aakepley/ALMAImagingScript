@@ -265,7 +265,7 @@ contspws = '0,1,2,3'
 flagmanager(vis=finalvis,mode='save',
             versionname='before_cont_flags')
 
-## UNCOMMENT ONLY IF YOU ARE USING 4.4 TO IMAGE THE DATA (CURRENTLY ONLY MANUAL REDUCTIONS)
+## UNCOMMENT ONLY IF YOU ARE USING CASA 4.4 OR GREATER TO IMAGE THE DATA (CURRENTLY ONLY MANUAL REDUCTIONS)
 # initweights(vis=finalvis,wtmode='weight',dowtsp=True)
 
 # Flag the "line channels"
@@ -285,7 +285,7 @@ contvis='calibrated_final_cont.ms'
 rmtables(contvis)
 os.system('rm -rf ' + contvis + '.flagversions')
 
-# IF YOU ARE USING CASA VERSION 4.4 TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
+# IF YOU ARE USING CASA VERSION 4.4 OR GREATER TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
 # split2(vis=finalvis,
 #      spw=contspws,      
 #      outputvis=contvis,
