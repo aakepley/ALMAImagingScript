@@ -83,20 +83,20 @@ if casadef.casa_version < '4.5.0':
 ########################################
 # Flux Equalization [OPTIONAL]
 
-#>>> If you are going to equalize the fluxes between different executions
-#>>> of the same SB, follow the instructions in the Combination section
-#>>> at: https://safe.nrao.edu/wiki/bin/view/ALMA/Cycle2DataReduction
-#>>> . Commands are provided here as a reference. If you do this step,
+#>>> In the unlikely event you are going to equalize the fluxes between
+#>>> different executions of the same SB, follow the instructions in the
+#>>> Combination section at: https://safe.nrao.edu/wiki/bin/view/ALMA/Cycle2DataReduction
+#>>> Commands are provided here as a reference. If you do this step,
 #>>> you will not need to do the next step (combining measurement sets
 #>>> from multiple executions).
 
 # generating the script -- REMOVE BEFORE SENDING TO PI
 es.generateReducScript(['uid_FIRST-EB.ms.split.cal','uid_SECOND-EB.ms.split.cal',(etc)], step='fluxcal')
 
-# check that the script is correct and make any necessary modifications.
+#>>> check that the commands in scriptForFluxCalibration.py is correct
+#>>> and make any necessary modifications.
 
-# run script
-execfile('scriptForFluxCalibration.py')
+#>>> insert commands from scriptForFluxCalibration.py here.
 
 ###############################################################
 # Combining Measurement Sets from Multiple Executions 
