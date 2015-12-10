@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Tue Dec  1 13:28:09 EST 2015
+#>>> Updated: Thu Dec 10 13:54:49 EST 2015
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -102,7 +102,8 @@ contspws = '0,1,2,3'
 flagmanager(vis=finalvis,mode='save',
             versionname='before_cont_flags')
 
-## UNCOMMENT ONLY IF YOU ARE USING 4.4 TO IMAGE THE DATA (CURRENTLY ONLY MANUAL REDUCTIONS)
+## UNCOMMENT ONLY IF YOU ARE USING CASA 4.4 OR HIGHER TO IMAGE THE DATA
+## (CURRENTLY ONLY MANUAL REDUCTIONS)
 # initweights(vis=finalvis,wtmode='weight',dowtsp=True)
 
 # Flag the "line channels"
@@ -121,6 +122,14 @@ plotms(vis=finalvis,yaxis='amp',xaxis='channel',
 contvis='calibrated_final_cont.ms'
 rmtables(contvis)
 os.system('rm -rf ' + contvis + '.flagversions')
+
+#>>> Note that to mitigate bandwidth smearing, please keep the width
+#>>> of averaged channels less than 125MHz in Band 3, 4, and 6, and
+#>>> 250MHz in Band 7. For a 2GHz window, this means that you should
+#>>> only average 16 channels together for Bands 3, 4, and 6 and 8 
+#>>> channels for Band 7. This is especially important for any long 
+#>>> baseline data.
+
 
 # IF YOU ARE USING CASA VERSION 4.4 AND ABOVE TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
 # split2(vis=finalvis,
@@ -141,7 +150,7 @@ os.system('rm -rf ' + contvis + '.flagversions')
 # channels in an SPW. Specifying the width of each spw (as done above)
 # is necessary for producing properly weighted data.
 
-# IN CASA 4.4, you should check the weights. You will need to change antenna and field to appropriate values
+# IN CASA 4.4 and above, you should check the weights. You will need to change antenna and field to appropriate values
 # plotms(vis=contvis, yaxis='wtsp',xaxis='freq',spw='',antenna='DA42',field='0')
 
 # If you flagged any line channels, restore the previous flags
@@ -749,6 +758,35 @@ for image in myimages:
 myimages = glob.glob("*.flux")
 for image in myimages:
     exportfits(imagename=image, fitsimage=image+'.fits',overwrite=True) 
+
+##############################################
+# Create Diagnostic PNGs
+
+#>>> The following code has not be extensively tested. Please let
+#>>> Amanda Kepley know if you find problems.
+
+os.system("rm -rf *.png")
+mycontimages = glob.glob("calibrated*.image")
+for cimage in mycontimages:
+    max=imstat(image)['max'][0]
+    min=-0.1*max
+    outimage = cimage+'.png'
+    os.system('rm -rf '+outimage)
+    imview(raster={'file':cimage,'range':[min,max]},out=outimage)
+
+
+# this will have to be run for each sourcename
+mylineimages = glob.glob(sourcename+"*.image")
+for limage in mylineimages:
+    rms=imstat(limage,chans='1')['rms'][0]
+    mom8=limage+'.mom8'
+    os.system("rm -rf "+mom8)
+    immoments(limage,moments=[8],includepix=[2*rms,1e6],outfile=mom8)
+    max=imstat(mom8)['max'][0]
+    min=-0.1*max
+    os.system("rm "+mom8+".png")
+    imview(raster={'file':mom8,'range':[min,max]},out=mom8+'.png')
+
 
 ##############################################
 # Analysis

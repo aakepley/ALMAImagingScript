@@ -35,8 +35,8 @@
 
 import re
 
-if (re.search('^4.2', casadef.casa_version) or re.search('^4.3', casadef.casa_version) or re.search('^4.4', casadef.casa_version))  == None:
- sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT: 4.2, 4.3, or 4.4')
+if casadef.casa_version >= '4.6.0' or casadef.casa_version < '4.2.0':
+    sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT.')
 
 ########################################
 # Getting a list of ms files to image
@@ -50,6 +50,8 @@ vislist=glob.glob('*.ms.split.cal')
 
 #>>> If you have obviously bad antennas, channels, etc leftover from
 #>>> the calibration, flag them here.
+
+#>>> The policy for Cycle three is to flag baselines longer than 10k when imaging.
 
 # Save original flags
 for vis in vislist:
