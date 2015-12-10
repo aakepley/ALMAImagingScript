@@ -125,24 +125,23 @@ os.system('rm -rf ' + contvis + '.flagversions')
 
 #>>> Note that to mitigate bandwidth smearing, please keep the width
 #>>> of averaged channels less than 125MHz in Band 3, 4, and 6, and
-#>>> 250MHz in Band 7. For a 2GHz window, this means that you should
-#>>> only average 16 channels together for Bands 3, 4, and 6 and 8 
-#>>> channels for Band 7. This is especially important for any long 
-#>>> baseline data.
-
+#>>> 250MHz in Band 7. For a 2GHz window FDM window, this means that
+#>>> the maximum width parameter should be 8 channels for Bands 3, 4,
+#>>> and 6 and 16 channels for Band 7. This is especially important
+#>>> for any long baseline data.
 
 # IF YOU ARE USING CASA VERSION 4.4 AND ABOVE TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
 # split2(vis=finalvis,
 #      spw=contspws,      
 #      outputvis=contvis,
-#      width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs or vishead to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
+#      width=[128,128,3840,3840], # number of channels to average together. The final channel width should be less than 125MHz in Bands 3, 4, and 6 and 250MHz in Band 7.
 #      datacolumn='data')
 
 # IF YOU ARE USING CASA VERSION 4.3 AND BELOW TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRIATE.
 # split(vis=finalvis,
 #       spw=contspws,      
 #       outputvis=contvis,
-#       width=[128,128,3840,3840], # number of channels to average together. change to appropriate value for each spectral window in contspws (use listobs or vishead to find) and make sure to use the native number of channels per SPW (that is, not the number of channels left after flagging any lines)
+#       width=[128,128,3840,3840], # number of channels to average together. The final channel width should be less than 125MHz in Bands 3, 4, and 6 and 250MHz in Band 7.
 #       datacolumn='data')
 
 # Note: There is a bug in split that does not average the data
