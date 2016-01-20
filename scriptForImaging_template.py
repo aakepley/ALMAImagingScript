@@ -144,10 +144,10 @@ os.system('rm -rf ' + contvis + '.flagversions')
 #       width=[128,128,3840,3840], # number of channels to average together. The final channel width should be less than 125MHz in Bands 3, 4, and 6 and 250MHz in Band 7.
 #       datacolumn='data')
 
-# Note: There is a bug in split that does not average the data
-# properly if the width is set to a value larger than the number of
-# channels in an SPW. Specifying the width of each spw (as done above)
-# is necessary for producing properly weighted data.
+# Note: There is a bug in split (but not split2) that does not average
+# the data properly if the width is set to a value larger than the
+# number of channels in an SPW. Specifying the width of each spw (as
+# done above) is necessary for producing properly weighted data.
 
 # IN CASA 4.4 and above, you should check the weights. You will need to change antenna and field to appropriate values
 # plotms(vis=contvis, yaxis='wtsp',xaxis='freq',spw='',antenna='DA42',field='0')
