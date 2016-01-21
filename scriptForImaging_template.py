@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Dec 10 13:54:49 EST 2015
+#>>> Updated: Thu Jan 21 10:51:05 EST 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -157,8 +157,7 @@ flagmanager(vis=finalvis,mode='restore',
             versionname='before_cont_flags')
 
 # Inspect continuum for any problems
-plotms(vis=finalvis,yaxis='amp',xaxis='channel',
-       avgchannel='1',avgtime='1e8',avgscan=True,iteraxis='spw') 
+plotms(vis=contvis,xaxis='uvdist',yaxis='amp',coloraxis='spw')
 
 # #############################################
 # Image Parameters
