@@ -124,11 +124,11 @@ rmtables(contvis)
 os.system('rm -rf ' + contvis + '.flagversions')
 
 #>>> Note that to mitigate bandwidth smearing, please keep the width
-#>>> of averaged channels less than 125MHz in Band 3, 4, and 6, and
-#>>> 250MHz in Band 7. For a 2GHz window FDM window, this means that
-#>>> the maximum width parameter should be 8 channels for Bands 3, 4,
-#>>> and 6 and 16 channels for Band 7. This is especially important
-#>>> for any long baseline data.
+#>>> of averaged channels less than 125MHz in Band 3, 4, and 6, and 250MHz
+#>>> in Band 7 for both TDM and FDM modes. For example, for a 2GHz TDM window
+#>>> with 16.625 GHz channels, this means that the maximum width parameter
+#>>> should be 8 channels for Bands 3, 4, and 6 and 16 channels for Band 7.
+#>>> This is especially important for any long baseline data.
 
 # IF YOU ARE USING CASA VERSION 4.4 AND ABOVE TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
 # split2(vis=finalvis,
