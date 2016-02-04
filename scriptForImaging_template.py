@@ -766,7 +766,7 @@ for image in myimages:
 os.system("rm -rf *.png")
 mycontimages = glob.glob("calibrated*.image")
 for cimage in mycontimages:
-    max=imstat(image)['max'][0]
+    max=imstat(cimage)['max'][0]
     min=-0.1*max
     outimage = cimage+'.png'
     os.system('rm -rf '+outimage)
