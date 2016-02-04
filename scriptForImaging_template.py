@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Fri Jan 29 09:58:23 EST 2016
+#>>> Updated: Thu Feb  4 13:26:39 EST 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -211,10 +211,13 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
 #>>> parameter is in PIXELS, not arcsec, so you will need to divide the image size
 #>>> in arcsec by the pixel size to determine a value for imsize.
 
-#>>> Note that for a single field you can check your image size using
-#>>> au.pickCellSize('calibrated_final.ms', imsize=True). This task does not
-#>>> into account the projection of the baselines, so the plotms method is
-#>>> more accurate.
+#>>> Note that you can check your image size using 
+#>>> au.pickCellSize('calibrated_final.ms', imsize=True). This task
+#>>> now works both mosaics and single fields, but has not been tested
+#>>> extensively on mosaics. Please report any large issues to
+#>>> Todd Hunter. Note that au.pickCellSize does not take
+#>>> into account the projection of the baselines, so the plotms
+#>>> method is more accurate.
 
 cell='1arcsec' # cell size for imaging.
 imsize = [128,128] # size of image in pixels.
@@ -774,12 +777,13 @@ for cimage in mycontimages:
 
 
 # this will have to be run for each sourcename
+sourcename='' # insert source here, if it isn't already set
 mylineimages = glob.glob(sourcename+"*.image")
 for limage in mylineimages:
     rms=imstat(limage,chans='1')['rms'][0]
     mom8=limage+'.mom8'
     os.system("rm -rf "+mom8)
-    immoments(limage,moments=[8],includepix=[2*rms,1e6],outfile=mom8)
+    immoments(limage,moments=[8],outfile=mom8)
     max=imstat(mom8)['max'][0]
     min=-0.1*max
     os.system("rm "+mom8+".png")
