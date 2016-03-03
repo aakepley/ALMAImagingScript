@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Thu Dec 10 13:54:49 EST 2015
+#>>> Updated: Thu Mar  3 12:24:13 EST 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -35,8 +35,10 @@
 
 import re
 
-if casadef.casa_version >= '4.6.0' or casadef.casa_version < '4.2.0':
-    sys.exit('ERROR: PLEASE USE THE SAME VERSION OF CASA THAT YOU USED FOR GENERATING THE SCRIPT.')
+current_casa_version = '4.5.1'
+
+if casadef.casa_version !=  current_casa_version:
+    sys.exit("Please use CASA version " + current_casa_version + " with this script")
 
 ########################################
 # Getting a list of ms files to image
@@ -66,23 +68,6 @@ for vis in vislist:
 #flagmanager(vis='',mode='restore',versionname='original_flags')
 
 ########################################
-# Removing pointing table
-
-# This step removes the pointing table from the data to avoid
-# a bug with mosaics in CASA 4.2.2.
-
-# DO NOT DO THIS FOR CASA 4.5 AND GREATER! DELETING THE POINTING TABLE
-# WILL CAUSE ISSUES FOR OTF MOSAICS.
-
-if casadef.casa_version < '4.5.0':
-    for vis in vislist:
-        tb.open( vis + '/POINTING',
-                 nomodify = False)
-        a = tb.rownumbers()
-        tb.removerows(a)
-        tb.close()
-
-########################################
 # Flux Equalization [OPTIONAL]
 
 #>>> In the unlikely event you are going to equalize the fluxes between
@@ -104,7 +89,8 @@ es.generateReducScript(['uid_FIRST-EB.ms.split.cal','uid_SECOND-EB.ms.split.cal'
 # Combining Measurement Sets from Multiple Executions 
 
 #>>> DO NOT DO THIS IF YOU HAVE EQUALIZED THE FLUX BETWEEN THE
-#>>> DIFFERENT EXECUTIONS OF A SCHEDULING BLOCK.
+#>>> DIFFERENT EXECUTIONS OF A SCHEDULING BLOCK. The flux
+#>>> equalization procedure already produces a single measurement set.
 
 # If you have multiple executions, you will want to combine the
 # scheduling blocks into a single ms using concat for ease of imaging

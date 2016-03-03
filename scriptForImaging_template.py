@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Feb  4 13:26:39 EST 2016
+#>>> Updated: Thu Mar  3 12:24:23 EST 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -86,7 +86,7 @@ plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
 #>>> has changed. Now when you plot binned channels, plotms displays
 #>>> the "bin" number rather than the average channel number of each
 #>>> bin. Amanda is trying to get this behavior changed back to
-#>>> something more sensible
+#>>> something more sensible.
 
 #>>> If you don't see any obvious lines in the above plot, you may to try
 #>>> to set avgbaseline=True with uvrange (e.g., <100m). Limiting the
@@ -102,13 +102,10 @@ contspws = '0,1,2,3'
 flagmanager(vis=finalvis,mode='save',
             versionname='before_cont_flags')
 
-## UNCOMMENT ONLY IF YOU ARE USING CASA 4.4 OR HIGHER TO IMAGE THE DATA
-## (CURRENTLY ONLY MANUAL REDUCTIONS)
-# initweights(vis=finalvis,wtmode='weight',dowtsp=True)
+initweights(vis=finalvis,wtmode='weight',dowtsp=True)
 
 # Flag the "line channels"
-flagchannels='2:1201~2199,3:1201~2199' # In this example , spws 2&3 have a line between channels 1201 and
-# 2199 and spectral windows 0 and 1 are line-free.
+flagchannels='2:1201~2199,3:1201~2199' # In this example , spws 2&3 have a line between channels 1201 and 2199 and spectral windows 0 and 1 are line-free.
 
 flagdata(vis=finalvis,mode='manual',
           spw=flagchannels,flagbackup=False)
@@ -130,27 +127,16 @@ os.system('rm -rf ' + contvis + '.flagversions')
 #>>> should be 8 channels for Bands 3, 4, and 6 and 16 channels for Band 7.
 #>>> This is especially important for any long baseline data.
 
-# IF YOU ARE USING CASA VERSION 4.4 AND ABOVE TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRRIATE.
-# split2(vis=finalvis,
-#      spw=contspws,      
-#      outputvis=contvis,
-#      width=[128,128,3840,3840], # number of channels to average together. The final channel width should be less than 125MHz in Bands 3, 4, and 6 and 250MHz in Band 7.
-#      datacolumn='data')
+split2(vis=finalvis,
+     spw=contspws,      
+     outputvis=contvis,
+     width=[128,128,3840,3840], # number of channels to average together. The final channel width should be less than 125MHz in Bands 3, 4, and 6 and 250MHz in Band 7.
+     datacolumn='data')
 
-# IF YOU ARE USING CASA VERSION 4.3 AND BELOW TO IMAGE, UNCOMMENT THE FOLLOWING. DELETE IF NOT APPROPRIATE.
-# split(vis=finalvis,
-#       spw=contspws,      
-#       outputvis=contvis,
-#       width=[128,128,3840,3840], # number of channels to average together. The final channel width should be less than 125MHz in Bands 3, 4, and 6 and 250MHz in Band 7.
-#       datacolumn='data')
 
-# Note: There is a bug in split (but not split2) that does not average
-# the data properly if the width is set to a value larger than the
-# number of channels in an SPW. Specifying the width of each spw (as
-# done above) is necessary for producing properly weighted data.
-
-# IN CASA 4.4 and above, you should check the weights. You will need to change antenna and field to appropriate values
-# plotms(vis=contvis, yaxis='wtsp',xaxis='freq',spw='',antenna='DA42',field='0')
+# Check the weights. You will need to change antenna and field to
+# appropriate values
+plotms(vis=contvis, yaxis='wtsp',xaxis='freq',spw='',antenna='DA42',field='0')
 
 # If you flagged any line channels, restore the previous flags
 flagmanager(vis=finalvis,mode='restore',
@@ -169,8 +155,8 @@ plotms(vis=contvis,xaxis='uvdist',yaxis='amp',coloraxis='spw')
 # ------------------
 
 field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEAVE BLANK ('') OR YOU WILL TRIGGER A BUG IN CLEAN THAT WILL PUT THE WRONG COORDINATE SYSTEM ON YOUR FINAL IMAGE.
-# imagermode='csclean' # uncomment if single field
-# imagermode='mosaic' # uncomment if mosaic
+# imagermode='csclean' # uncomment if single field 
+# imagermode='mosaic' # uncomment if mosaic or if combining one 7m and one 12m pointing.
 # phasecenter=3 # uncomment and set to field number for phase
                 # center. Note lack of ''.  Use the weblog to
                 # determine which pointing to use. Remember that the
