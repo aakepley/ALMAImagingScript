@@ -35,10 +35,8 @@
 
 import re
 
-current_casa_version = '4.5.1'
-
-if casadef.casa_version !=  current_casa_version:
-    sys.exit("Please use CASA version " + current_casa_version + " with this script")
+if casadef.casa_version >= '4.6.0' or casadef.casa_version < '4.2.0':
+    sys.exit("Please use CASA version between 4.6.0 and 4.2.0 with this script")
 
 ########################################
 # Getting a list of ms files to image
@@ -72,7 +70,8 @@ for vis in vislist:
 
 #>>> In the unlikely event you are going to equalize the fluxes between
 #>>> different executions of the same SB, follow the instructions in the
-#>>> Combination section at: https://safe.nrao.edu/wiki/bin/view/ALMA/Cycle2DataReduction
+#>>> Combination section at:
+#>>>     https://safe.nrao.edu/wiki/bin/view/ALMA/Cycle1and2ImagingReduction#Fluxscale
 #>>> Commands are provided here as a reference. If you do this step,
 #>>> you will not need to do the next step (combining measurement sets
 #>>> from multiple executions).
