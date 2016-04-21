@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Fri Apr  8 17:08:09 EDT 2016
+#>>> Updated: Thu Apr 21 11:27:44 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -117,10 +117,6 @@ concat(vis=vislist,
 #>>> Uncomment following line for multiple executions
 # concatvis='calibrated.ms'
 
-vishead(vis=concatvis)
-
-#>>> INCLUDE vishead OUTPUT FOR SCIENCE TARGET AND SPW IDS HERE.
-
 #>>> Doing the split.  If multiple data sets were rescaled using
 #>>> scriptForFluxCalibration.py, need to get datacolumn='corrected'
 
@@ -132,8 +128,8 @@ split(vis=concatvis,
       outputvis=sourcevis,
       datacolumn='data')
 
-# Check that split worked as desired.
-vishead(vis=sourcevis) 
+# Output a listobs file
+listobs(vis=sourcevis,listfile=sourcevis+'.listobs.txt') 
 
 ###############################################################
 # Regridding spectral windows [OPTIONAL]
