@@ -46,8 +46,8 @@
 
 import re
 
-if casadef.casa_version >= '4.4.0' :
-    sys.exit("Please use CASA version greater than 4.4.0 with this script")
+if casadef.casa_version < '4.4.0') :
+    sys.exit("Please use CASA version greater than or equal to 4.4.0 with this script")
 
 
 ##################################################
