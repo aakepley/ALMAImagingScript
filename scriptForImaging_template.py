@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Mar  3 12:24:23 EST 2016
+#>>> Updated: Wed May 18 16:48:17 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -40,6 +40,15 @@
 #>>> development. Please contact Amanda Kepley (akepley@nrao.edu) if you
 #>>> have any suggested changes or find any bugs that are almost
 #>>> certainly there.
+
+########################################
+# Check CASA version
+
+import re
+
+if casadef.casa_version >= '4.4.0' :
+    sys.exit("Please use CASA version greater than 4.4.0 with this script")
+
 
 ##################################################
 # Create an Averaged Continuum MS
@@ -85,8 +94,8 @@ plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
 #>>> In CASA 4.4 and higher, the behavior of the avgchannel parameter
 #>>> has changed. Now when you plot binned channels, plotms displays
 #>>> the "bin" number rather than the average channel number of each
-#>>> bin. Amanda is trying to get this behavior changed back to
-#>>> something more sensible.
+#>>> bin. A ticket has been filed to revert this back to the previous
+#>>> (more sensible) behavior.
 
 #>>> If you don't see any obvious lines in the above plot, you may to try
 #>>> to set avgbaseline=True with uvrange (e.g., <100m). Limiting the
@@ -311,6 +320,13 @@ spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral win
 # self-calibration. The task applycal will flag data that doesn't have
 # solutions.
 flagmanager(vis=contvis,mode='save',versionname='before_selfcal',merge='replace')
+
+# Get rid of any models that might be hanging around in the image header
+delmod(vis=contvis,field=field,otf=True)
+
+# If you are re-doing your self-cal, uncomment the next line to reset
+# your corrected data column back to its original state.
+#clearcal(vis=contvis)
 
 # shallow clean on the continuum
 
@@ -602,14 +618,16 @@ linevis = finalvis+'.contsub'
 #########################################################
 # Apply continuum self-calibration to line data [OPTIONAL]
 
-linevis = finalvis+'.contsub'
+# uncomment one  of the following
+# linevis = finalvis+'.contsub' # if continuum subtracted
+# linevis = finalvis  #  if not continuum subtracted
 
 # save original flags in case you don't like the self-cal
 flagmanager(vis=linevis,mode='save',versionname='before_selfcal',merge='replace')
 
 spwmap_line = [0] # Mapping self-calibration solution to the individual line spectral windows.
 applycal(vis=linevis,
-         spwmap=[spwmap_line, spwmap_line], # select which spws to apply the solutions for each table
+         spwmap=[spwmap_line, spwmap_line], # entering the appropriate spwmap_line value for each spw in the input dataset
          field=field,
          gaintable=['pcal3','apcal'],
          gainfield='',

@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Thu Apr 21 11:27:44 EDT 2016
+#>>> Updated: Wed May 18 16:49:18 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -30,13 +30,6 @@
 #>>> akepley@nrao.edu and she'll forward them on to the NA Imaging team.
 #>>>
 #>>>
-########################################
-# Check CASA version
-
-import re
-
-if casadef.casa_version >= '4.6.0' or casadef.casa_version < '4.2.0':
-    sys.exit("Please use CASA version between 4.6.0 and 4.2.0 with this script")
 
 ########################################
 # Getting a list of ms files to image
