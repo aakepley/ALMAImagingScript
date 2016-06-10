@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Wed May 18 16:48:17 EDT 2016
+#>>> Updated: Fri Jun 10 13:18:32 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -613,8 +613,6 @@ uvcontsub(vis=finalvis,
 # always create a line-free continuum data set using the process
 # outlined above.
 
-linevis = finalvis+'.contsub'
-
 #########################################################
 # Apply continuum self-calibration to line data [OPTIONAL]
 
@@ -797,5 +795,6 @@ for limage in mylineimages:
 ##############################################
 # Analysis
 
-# For examples of how to get started analyzing your data, see 
-#     http://casaguides.nrao.edu/index.php?title=TWHydraBand7_Imaging_4.2
+# For examples of how to get started analyzing your data, see
+#     https://casaguides.nrao.edu/index.php/TWHydraBand7_Imaging_4.3
+#     
