@@ -44,13 +44,27 @@ vislist=glob.glob('*.ms.split.cal')
 #>>> If you have obviously bad antennas, channels, etc leftover from
 #>>> the calibration, flag them here.
 
-#>>> The policy for Cycle three is to flag baselines longer than 10k when imaging.
+#>>> The policy for Cycle 3 is to flag baselines longer than 10km when imaging.
 
 # Save original flags
 for vis in vislist:
     flagmanager(vis=vis,
                 mode='save',
                 versionname='original_flags')
+
+# Inspect the data
+fieldlist = ['3'] # list of fields to inspect
+spwlist = ['1'] # list of spws to inspect
+for vis in vislist:
+    for field in fieldlist:
+        for spw in spwlist:
+            plotms(vis=vis,xaxis='uvwave',yaxis='amp',avgtime='3e8',
+                   field=field,spw=spw) 
+            raw_input("push enter to continue")
+
+            plotms(vis=vis,xaxis='chan',yaxis='amp',avgtime='3e8',
+                   field=field,spw=spw) 
+            raw_input("push enter to continue")
 
 # Flag the offending data. See flagdata help for more info.
 #flagdata(vis='',mode='manual',action='apply',flagbackup=False)

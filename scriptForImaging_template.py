@@ -46,7 +46,7 @@
 
 import re
 
-if casadef.casa_version < '4.4.0') :
+if casadef.casa_version < '4.4.0' :
     sys.exit("Please use CASA version greater than or equal to 4.4.0 with this script")
 
 
@@ -294,7 +294,7 @@ clean(vis=contvis,
 #>>> expected rms is not reached on the continuum (for projects where the
 #>>> sensitivity is defined for the continuum) or the line data (for
 #>>> projects where the sensitivity is defined for the line data). It
-#>>> should not be tempted on 'partial' datasets (ACA and _TC datasets),
+#>>> should not be attempted on 'partial' datasets (ACA and _TC datasets),
 #>>> and, in the interest of reducing the time required to image, is not
 #>>> recommended for datasets which do meet the rms requirement
 
