@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Jun 23 11:26:45 CEST 2016
+#>>> Updated: Fri Jul  8 16:37:42 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -221,11 +221,11 @@ imsize = [128,128] # size of image in pixels.
 # -------------------
 
 outframe='bary' # velocity reference frame. See science goals.
-veltype='radio' # velocity type. See note below.
+veltype='radio' # velocity type. 
 
-#>>> Note on veltype: We recommend keeping veltype set to radio,
-#>>> regardless of the velocity frame listed the object in the OT. If the
-#>>> sensitivity is defined using a velocity width, then the 'radio'
+#>>> Note on veltype: For quality assurance purposes, we recommend keeping veltype
+#>>> set to radio, regardless of the velocity frame listed the object in the OT.
+#>>> If the sensitivity in the OT is defined using a velocity width, then the 'radio'
 #>>> definition of the velocity frame is used regardless of the velocity
 #>>> definition in the "source parameters" tab of the OT.
 

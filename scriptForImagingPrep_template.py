@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Thu Jun 23 11:26:45 CEST 2016
+#>>> Updated: Fri Jul  8 16:37:42 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -52,9 +52,15 @@ for vis in vislist:
                 mode='save',
                 versionname='original_flags')
 
-# Inspect the data
-fieldlist = ['3'] # list of fields to inspect
-spwlist = ['1'] # list of spws to inspect
+# Inspect the science data
+fieldlist = ['3'] # list of science data fields to inspect
+spwlist = ['1'] # list of science spws to inspect
+
+# loop through science data fields and spws to inspect.
+
+#>>> This is mainly for convenience. Note that if your field names
+#>>> change between executions, you will need to create a separate loop
+#>>> for each ms file.
 for vis in vislist:
     for field in fieldlist:
         for spw in spwlist:
