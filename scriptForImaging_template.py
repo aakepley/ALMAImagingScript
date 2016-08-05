@@ -2,7 +2,8 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Fri Jul  8 16:37:42 EDT 2016
+#>>> Updated: Fri Aug  5 10:52:28 EDT 2016
+
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -102,6 +103,10 @@ plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
 #>>> uvrange to the short baselines greatly improves the visibility of
 #>>> lines with extended emission.
 
+#>>> If you have multiple sources, the line channel ranges may be
+#>>> different for different sources. Thus you would need to repeat the
+#>>> process below for each source.
+
 
 # Set spws to be used to form continuum
 contspws = '0,1,2,3'
@@ -115,6 +120,7 @@ initweights(vis=finalvis,wtmode='weight',dowtsp=True)
 
 # Flag the "line channels"
 flagchannels='2:1201~2199,3:1201~2199' # In this example , spws 2&3 have a line between channels 1201 and 2199 and spectral windows 0 and 1 are line-free.
+
 
 flagdata(vis=finalvis,mode='manual',
           spw=flagchannels,flagbackup=False)
@@ -134,7 +140,10 @@ os.system('rm -rf ' + contvis + '.flagversions')
 #>>> in Band 7 for both TDM and FDM modes. For example, for a 2GHz TDM window
 #>>> with 16.625 MHz channels, this means that the maximum width parameter
 #>>> should be 8 channels for Bands 3, 4, and 6 and 16 channels for Band 7.
-#>>> This is especially important for any long baseline data.
+#>>> This is especially important for any long baseline data. These limits
+#>>> have been designed to have minimize the reduction of the peak flux to
+#>>> 95%. See the "for continuum" header for more information on the imaging
+#>>> wiki for more infomration.
 
 split2(vis=finalvis,
      spw=contspws,      
@@ -594,6 +603,14 @@ clearcal(vis=contvis)
 #>>> subtract the continuum from the line data. You should not continuum
 #>>> subtract if the line of interest is in absorption.
 
+#>>> You can use au.invertChannelRanges(flagchannels,vis=finalvis) to
+#>>> get the fitspw below. You will need to insert any continuum spws
+#>>> that weren't included in flagchannels. For example, if your continuum
+#>>> spws are '0,1,2' and flagchannels='1:260~500', au.invertChannelRanges will return
+#>>> '1:0~259,1:501~3839'. The fitspw parameter should be '0,1:0~259,1:501~3839,2'
+#>>> Make sure to cut and paste the output in fitspw below since PIs don't have
+#>>> analysisUtilities by default.
+
 fitspw = '0,1,2:0~1200;1500~3839,3:0~1200;1500~3839' # line-free channel for fitting continuum
 linespw = '2,3' # line spectral windows. You can subtract the continuum from multiple spectral line windows at once.
 
@@ -606,6 +623,10 @@ uvcontsub(vis=finalvis,
           solint='int',
           fitorder=1,
           want_cont=False) # This value should not be changed.
+
+#>>> Note that the continuum subtraction is done for each field in 
+#>>> turn. However, if the fields have different line-free channels, you
+#>>> will need to do the continuum subtraction separately for each field.
 
 # NOTE: Imaging the continuum produced by uvcontsub with
 # want_cont=True will lead to extremely poor continuum images because
