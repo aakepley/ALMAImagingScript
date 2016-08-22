@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Mon Aug 22 14:24:42 EDT 2016
+#>>> Updated: Mon Aug 22 15:07:03 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -552,7 +552,7 @@ applycal(vis=contvis,
          gainfield='',
          calwt=F,
          flagbackup=F,
-         interp='linearperobs')
+         interp=['linearperobs','linearperobs'])
 
 # Make amplitude and phase self-calibrated image.
 for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
