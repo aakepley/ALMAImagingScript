@@ -645,7 +645,8 @@ applycal(vis=linevis,
          gaintable=['pcal3','apcal'],
          gainfield='',
          calwt=F,
-         flagbackup=F)
+         flagbackup=F,
+         interp=['linearperobs','linearperobs'])
 
 # Save results of self-cal in a new ms and reset the image name.
 split(vis=linevis,
