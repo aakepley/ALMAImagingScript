@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Mon Aug 22 15:07:03 EDT 2016
+#>>> Updated: Wed Aug 24 14:29:00 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -602,16 +602,25 @@ clearcal(vis=contvis)
 #>>> subtract the continuum from the line data. You should not continuum
 #>>> subtract if the line of interest is in absorption.
 
-#>>> NOTE CHANGE BELOW TO USE LINE CHANNELS FOR FITSPW AND EXCLUDECHANS=TRUE IN UVCONTSUB.
-fitspw = '2:1201~2199,3:1201~2199' # LINE CHANNELS. Can be the same as the flagchannels variable you set earlier
+#>>> NOTE THAT WE'RE BACK TO EXCLUDECHANS=FALSE, SO FITSPW INDICATES THE LINE-FREE CHANNELS.
+
+#>>> You can use au.invertChannelRanges(flagchannels,vis=finalvis) to
+#>>> get the fitspw below. You will need to insert any continuum spws
+#>>> that weren't included in flagchannels. For example, if your continuum
+#>>> spws are '0,1,2' and flagchannels='1:260~500', au.invertChannelRanges will return
+#>>> '1:0~259,1:501~3839'. The fitspw parameter should be '0,1:0~259,1:501~3839,2'
+#>>> Make sure to cut and paste the output in fitspw below since PIs don't have
+#>>> analysisUtilities by default.
+
+fitspw = '0,1,2:0~1200;1500~3839,3:0~1200;1500~3839' # *line-free* channels for fitting continuum
 linespw = '2,3' # line spectral windows. You can subtract the continuum from multiple spectral line windows at once.
 
 finalvis='calibrated_final.ms'
 
 uvcontsub(vis=finalvis,
           spw=linespw, # spw to do continuum subtraction on
-          fitspw=fitspw, # regions with lines. can be set equal to flagchannels 
-          excludechans=True, # exclude the channels specified in fitspw (i.e., fitspw specifies line channels)
+          fitspw=fitspw, # regions without lines.
+          excludechans=False, # fit the regions in fitspw
           combine='spw', 
           solint='int',
           fitorder=1,
