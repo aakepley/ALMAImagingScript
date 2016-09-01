@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Wed Aug 24 14:29:00 EDT 2016
+#>>> Updated: Thu Sep  1 13:26:06 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -261,8 +261,12 @@ contimagename = 'calibrated_final_cont'
 #clearcal(vis=contvis)
 #delmod(vis=contvis)
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(contimagename+ext)
+
+#>>> The .pb and .wtsum images are only produced with tclean.
+
+#>>> If you're going be be imaging with nterms>1, then you also need to removed the *.tt0, and *.tt1 images in additional to those listed above.
 
 clean(vis=contvis,
       imagename=contimagename,
@@ -338,7 +342,7 @@ delmod(vis=contvis,field=field,otf=True)
 
 # shallow clean on the continuum
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(contimagename + '_p0'+ ext)
     
 clean(vis=contvis,
@@ -392,7 +396,7 @@ applycal(vis=contvis,
          interp='linearperobs')
 
 # clean deeper
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(contimagename + '_p1'+ ext)
 
 clean(vis=contvis,
@@ -446,7 +450,7 @@ applycal(vis=contvis,
          interp='linearperobs')
 
 # clean deeper
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(contimagename + '_p2'+ ext)
 
 clean(vis=contvis,
@@ -500,7 +504,7 @@ applycal(vis=contvis,
          interp='linearperobs')
 
 # do the amplitude self-calibration.
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(contimagename + '_p3'+ ext)
 
 clean(vis=contvis,
@@ -555,7 +559,7 @@ applycal(vis=contvis,
          interp=['linearperobs','linearperobs'])
 
 # Make amplitude and phase self-calibrated image.
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(contimagename + '_ap'+ ext)
 
 clean(vis=contvis,
@@ -723,7 +727,7 @@ nchan = 100  # number of channels. See science goals for appropriate value.
 #clearcal(vis=linevis)
 #delmod(vis=linevis)
 
-for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage']:
+for ext in ['.flux','.image','.mask','.model','.pbcor','.psf','.residual','.flux.pbcoverage','.pb','.wtsum']:
     rmtables(lineimagename + ext)
 
 clean(vis=linevis,

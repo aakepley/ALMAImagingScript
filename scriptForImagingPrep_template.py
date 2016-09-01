@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Fri Aug  5 10:52:42 EDT 2016
+#>>> Updated: Thu Sep  1 13:21:25 EDT 2016
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -141,9 +141,6 @@ split(vis=concatvis,
       outputvis=sourcevis,
       datacolumn='data')
 
-# Output a listobs file
-listobs(vis=sourcevis,listfile=sourcevis+'.listobs.txt') 
-
 ###############################################################
 # Regridding spectral windows [OPTIONAL]
 
@@ -187,7 +184,6 @@ cvel(vis=sourcevis,
 #>>> If you have multiple sets of spws that you wish you combine, just
 #>>> repeat the above process with spw set to the other values.
 
-
 ############################################
 # Rename and backup data set
 
@@ -206,3 +202,7 @@ cvel(vis=sourcevis,
 #>>> ('calibrated_final.ms'). The packaging process requires a file with
 #>>> this name.
 
+############################################
+# Output a listobs file
+
+listobs(vis='calibrated_final.ms',listfile='calibrated_final.ms.listobs.txt') 
