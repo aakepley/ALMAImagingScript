@@ -2,7 +2,8 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Oct  6 10:46:19 EDT 2016
+#>>> Updated: Mon Apr  3 11:36:49 EDT 2017
+
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -391,8 +392,8 @@ applycal(vis=contvis,
          spwmap=spwmap, 
          gaintable=['pcal1'],
          gainfield='',
-         calwt=F, 
-         flagbackup=F,
+         calwt=False, 
+         flagbackup=False,
          interp='linearperobs')
 
 # clean deeper
@@ -445,8 +446,8 @@ applycal(vis=contvis,
          field=field,
          gaintable=['pcal2'],
          gainfield='',
-         calwt=F, 
-         flagbackup=F,
+         calwt=False, 
+         flagbackup=False,
          interp='linearperobs')
 
 # clean deeper
@@ -499,8 +500,8 @@ applycal(vis=contvis,
          field=field,
          gaintable=['pcal3'],
          gainfield='',
-         calwt=F, 
-         flagbackup=F,
+         calwt=False, 
+         flagbackup=False,
          interp='linearperobs')
 
 # do the amplitude self-calibration.
@@ -554,8 +555,8 @@ applycal(vis=contvis,
          field=field,
          gaintable=['pcal3','apcal'],
          gainfield='',
-         calwt=F,
-         flagbackup=F,
+         calwt=False,
+         flagbackup=False,
          interp=['linearperobs','linearperobs'])
 
 # Make amplitude and phase self-calibrated image.
@@ -656,8 +657,8 @@ applycal(vis=linevis,
          field=field,
          gaintable=['pcal3','apcal'],
          gainfield='',
-         calwt=F,
-         flagbackup=F,
+         calwt=False,
+         flagbackup=False,
          interp=['linearperobs','linearperobs'])
 
 # Save results of self-cal in a new ms and reset the image name.

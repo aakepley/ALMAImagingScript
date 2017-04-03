@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Thu Sep  1 13:21:25 EDT 2016
+#>>> Updated: Mon Apr  3 11:36:08 EDT 2017
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
