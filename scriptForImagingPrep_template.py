@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Mon Apr  3 11:36:08 EDT 2017
+#>>> Updated: Wed Jul  5 17:07:10 EDT 2017
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -30,6 +30,32 @@
 #>>> akepley@nrao.edu and she'll forward them on to the NA Imaging team.
 #>>>
 #>>>
+
+######################################
+# Splitting off the calibrated data
+
+#>>> Produce a *.split.cal file from pipeline products to match historic
+#>>> imaging procedure. If you already have a split.cal file, you can
+#>>> skip this step.
+
+import glob
+
+vislist = glob.glob('*X????.ms')  # match full ms, not target.ms
+
+for myvis in vislist:
+
+    msmd.open(myvis)
+    targetspws = msmd.spwsforintent('OBSERVE_TARGET*')  
+    sciencespws = []                                      
+    for myspw in targetspws:                               
+        if msmd.nchan(myspw)>4:
+            sciencespws.append(myspw)
+    sciencespws = ','.join(map(str,sciencespws))
+    msmd.close()
+    
+    split(vis=myvis,outputvis=myvis+'.split.cal',spw=sciencespws, intent='OBSERV
+E_TARGET*')
+
 
 ########################################
 # Getting a list of ms files to image
