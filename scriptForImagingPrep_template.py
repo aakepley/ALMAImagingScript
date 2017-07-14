@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Wed Jul  5 17:07:10 EDT 2017
+#>>> Updated: Fri Jul 14 12:51:11 EDT 2017
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -40,7 +40,7 @@
 
 import glob
 
-vislist = glob.glob('*X????.ms')  # match full ms, not target.ms
+vislist = glob.glob('*[!_t].ms')  # match full ms, not target.ms
 
 for myvis in vislist:
 
@@ -53,8 +53,7 @@ for myvis in vislist:
     sciencespws = ','.join(map(str,sciencespws))
     msmd.close()
     
-    split(vis=myvis,outputvis=myvis+'.split.cal',spw=sciencespws, intent='OBSERV
-E_TARGET*')
+    split(vis=myvis,outputvis=myvis+'.split.cal',spw=sciencespws)
 
 
 ########################################
