@@ -2,8 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Mon Apr  3 11:36:49 EDT 2017
-
+#>>> Updated: Thu Aug 24 15:28:54 EDT 2017
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -801,11 +800,11 @@ for image in myimages:
 os.system("rm -rf *.png")
 mycontimages = glob.glob("calibrated*.image")
 for cimage in mycontimages:
-    max=imstat(cimage)['max'][0]
-    min=-0.1*max
+    mymax=imstat(cimage)['max'][0]
+    mymin=-0.1*mymax
     outimage = cimage+'.png'
     os.system('rm -rf '+outimage)
-    imview(raster={'file':cimage,'range':[min,max]},out=outimage)
+    imview(raster={'file':cimage,'range':[mymin,mymax]},out=outimage)
 
 
 # this will have to be run for each sourcename
@@ -816,10 +815,10 @@ for limage in mylineimages:
     mom8=limage+'.mom8'
     os.system("rm -rf "+mom8)
     immoments(limage,moments=[8],outfile=mom8)
-    max=imstat(mom8)['max'][0]
-    min=-0.1*max
+    mymax=imstat(mom8)['max'][0]
+    mymin=-0.1*mymax
     os.system("rm "+mom8+".png")
-    imview(raster={'file':mom8,'range':[min,max]},out=mom8+'.png')
+    imview(raster={'file':mom8,'range':[mymin,mymax]},out=mom8+'.png')
 
 
 ##############################################
