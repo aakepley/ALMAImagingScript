@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Fri Jul 14 12:51:11 EDT 2017
+#>>> Updated: Thu Oct 12 13:46:43 EDT 2017
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -68,8 +68,6 @@ vislist=glob.glob('*.ms.split.cal')
 
 #>>> If you have obviously bad antennas, channels, etc leftover from
 #>>> the calibration, flag them here.
-
-#>>> The policy for Cycle 3 is to flag baselines longer than 10km when imaging.
 
 # Save original flags
 for vis in vislist:
