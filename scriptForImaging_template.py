@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Oct 12 13:46:43 EDT 2017
+#>>> Updated: Tue Oct 17 12:59:20 EDT 2017
 
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -261,7 +261,7 @@ contimagename = ''
 #clearcal(vis=contvis)
 #delmod(vis=contvis)
 
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename+ext)
 
 #>>> If you're going be be imaging with nterms>1, then you also need to removed the *.tt0, and *.tt1 images in additional to those listed above.
@@ -344,7 +344,7 @@ delmod(vis=contvis,field=field,otf=True)
 
 # shallow clean on the continuum
 
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename + '_p0'+ ext)
 
 tclean(vis=contvis,
@@ -400,7 +400,7 @@ applycal(vis=contvis,
          interp='linearperobs')
 
 # clean deeper
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename + '_p1'+ ext)
 
 tclean(vis=contvis,
@@ -456,7 +456,7 @@ applycal(vis=contvis,
          interp='linearperobs')
 
 # clean deeper
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename + '_p2'+ ext)
 
 tclean(vis=contvis,
@@ -512,7 +512,7 @@ applycal(vis=contvis,
          interp='linearperobs')
 
 # do the amplitude self-calibration.
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename + '_p3'+ ext)
 
 tclean(vis=contvis,
@@ -570,7 +570,7 @@ applycal(vis=contvis,
          interp=['linearperobs','linearperobs'])
 
 # Make amplitude and phase self-calibrated image.
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename + '_ap'+ ext)
 
 
@@ -743,7 +743,7 @@ nchan = 100  # number of channels. See science goals for appropriate value.
 #clearcal(vis=linevis)
 #delmod(vis=linevis)
 
-for ext in ['.image','.mask','.model','image.pbcor','.psf','.residual','.pb','.sumwt']:
+for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(lineimagename + ext)
 
 tclean(vis=linevis,
