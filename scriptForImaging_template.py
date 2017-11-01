@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu Oct 12 13:46:43 EDT 2017
+#>>> Updated: Wed Nov  1 16:01:23 EDT 2017
 
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -363,7 +363,8 @@ tclean(vis=contvis,
        niter=niter, 
        threshold=threshold, 
        interactive=True,
-       gridder=gridder)
+       gridder=gridder,
+       savemodel='modelcolumn')
 
 #>>> Note number of iterations performed.
 
@@ -419,7 +420,8 @@ tclean(vis=contvis,
        niter=niter, 
        threshold=threshold, 
        interactive=True,
-       gridder=gridder)
+       gridder=gridder,
+       savemodel='modelcolumn')
 
 # Note number of iterations performed.
 
@@ -475,7 +477,8 @@ tclean(vis=contvis,
        niter=niter, 
        threshold=threshold, 
        interactive=True,
-       gridder=gridder)
+       gridder=gridder,
+       savemodel='modelcolumn')
 
 #>>> Note number of iterations performed.
 
@@ -531,7 +534,8 @@ tclean(vis=contvis,
        niter=niter, 
        threshold=threshold, 
        interactive=True,
-       gridder=gridder)
+       gridder=gridder,
+       savemodel='modelcolumn')
 
 
 #>>> Note number of iterations performed.
@@ -590,7 +594,8 @@ tclean(vis=contvis,
        niter=niter, 
        threshold=threshold, 
        interactive=True,
-       gridder=gridder)
+       gridder=gridder,
+       savemodel='modelcolumn')
 
 #>>> Note final RMS and number of clean iterations. Compare the RMS to
 #>>> the RMS from the earlier, pre-selfcal image.
