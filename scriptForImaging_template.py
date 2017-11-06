@@ -264,7 +264,16 @@ contimagename = ''
 for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.sumwt']:
     rmtables(contimagename+ext)
 
-#>>> If you're going be be imaging with nterms>1, then you also need to removed the *.tt0, and *.tt1 images in additional to those listed above.
+#>>> If you're going be be imaging with nterms>1, then you also need
+#>>> to removed the *.tt0, and *.tt1 images in additional to those
+#>>> listed above.
+
+#>>> If the fractional bandwidth for the aggregate continuum is
+#>>> greater than 10%, set deconvolver='mtmfs' to use multi-frequency
+#>>> synthesis. This algorithm takes into account the spatial spectral
+#>>> index variations in an image.  Note that only ALMA Band 3 and the
+#>>> lower end of Band can have fractional bandwidths of greater than
+#>>> 10% and only when both sidebands are employed.
 
 tclean(vis=contvis,
        imagename=contimagename,
@@ -272,7 +281,7 @@ tclean(vis=contvis,
        #  phasecenter=phasecenter, # uncomment if mosaic.      
        specmode='mfs',
        deconvolver='hogbom', 
-       # Uncomment the below to image with nterms>1.
+       # Uncomment the below to image with nterms>1 when the fractional bandwidth is greater than 10%.
        #deconvolver='mtmfs',
        #nterms=2,
        imsize = imsize, 
