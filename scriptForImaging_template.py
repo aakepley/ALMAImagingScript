@@ -604,7 +604,8 @@ tclean(vis=contvis,
        threshold=threshold, 
        interactive=True,
        gridder=gridder,
-       savemodel='modelcolumn')
+       savemodel='modelcolumn',
+       pbcor=True) # apply the primary beam correction since this is the last image.
 
 #>>> Note final RMS and number of clean iterations. Compare the RMS to
 #>>> the RMS from the earlier, pre-selfcal image.
@@ -781,7 +782,8 @@ tclean(vis=linevis,
        robust=robust,
        gridder=gridder,
        pbcor=True,
-       restoringbeam='common')
+       restoringbeam='common',
+       chanchunks=-1) # break up large cubes automatically so that you don't run out of memory.
 
 #>>> If interactively cleaning (interactive=True), then note number of
 #>>> iterations at which you stop for the PI. This number will help the
