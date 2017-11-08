@@ -430,6 +430,7 @@ tclean(vis=contvis,
        threshold=threshold, 
        interactive=True,
        gridder=gridder,
+       #pbcor = True, #if final image
        savemodel='modelcolumn')
 
 # Note number of iterations performed.
@@ -487,6 +488,7 @@ tclean(vis=contvis,
        threshold=threshold, 
        interactive=True,
        gridder=gridder,
+       #pbcor = True, #if final image
        savemodel='modelcolumn')
 
 #>>> Note number of iterations performed.
@@ -544,6 +546,7 @@ tclean(vis=contvis,
        threshold=threshold, 
        interactive=True,
        gridder=gridder,
+       #pbcor = True, #if final image
        savemodel='modelcolumn')
 
 
