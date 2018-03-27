@@ -269,11 +269,12 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 #>>> listed above.
 
 #>>> If the fractional bandwidth for the aggregate continuum is
-#>>> greater than 10%, set deconvolver='mtmfs' to use multi-frequency
-#>>> synthesis. This algorithm takes into account the spatial spectral
-#>>> index variations in an image.  Note that only ALMA Band 3 and the
-#>>> lower end of Band can have fractional bandwidths of greater than
-#>>> 10% and only when both sidebands are employed.
+#>>> greater than 10%, set deconvolver='mtmfs' to use multi-term,
+#>>> multi-frequency synthesis. This algorithm takes into account the
+#>>> spatial spectral index variations in an image.  Note that only
+#>>> ALMA Band 3 and the lower end of Band 4 can have fractional
+#>>> bandwidths of greater than 10% and only when both sidebands are
+#>>> employed.
 
 tclean(vis=contvis,
        imagename=contimagename,
@@ -389,6 +390,11 @@ gaincal(vis=contvis,
         solint='inf',
         minsnr=3.0,
         minblperant=6)
+
+#>>> If many of the above many solutions are flagged, consider setting
+#>>> minsnr=1.5 and comparing the solutions. For low (<~500) dynamic
+#>>> range cases, including a bit more random noise in the solution
+#>>> has only a small effect on the image.
 
 # Check the solution
 plotcal(caltable='pcal1',
@@ -638,8 +644,6 @@ clearcal(vis=contvis)
 #>>> subtract the continuum from the line data. You should not continuum
 #>>> subtract if the line of interest is in absorption.
 
-#>>> NOTE THAT WE'RE BACK TO EXCLUDECHANS=FALSE, SO FITSPW INDICATES THE LINE-FREE CHANNELS.
-
 #>>> You can use au.invertChannelRanges(flagchannels,vis=finalvis) to
 #>>> get the fitspw below. You will need to insert any continuum spws
 #>>> that weren't included in flagchannels. For example, if your continuum
@@ -648,8 +652,8 @@ clearcal(vis=contvis)
 #>>> Make sure to cut and paste the output in fitspw below since PIs don't have
 #>>> analysisUtilities by default.
 
-fitspw = '0,1,2:0~1200;1500~3839,3:0~1200;1500~3839' # *line-free* channels for fitting continuum
-linespw = '2,3' # line spectral windows. You can subtract the continuum from multiple spectral line windows at once.
+fitspw = '2:0~1200;1500~3839,3:0~1200;1500~3839' # *line-free* channels for fitting continuum
+linespw = '2,3' # line spectral windows. You can subtract the continuum from multiple spectral line windows at once. The linespw must be in the fitspw unless combine='spw'
 
 finalvis='calibrated_final.ms'
 
@@ -657,7 +661,7 @@ uvcontsub(vis=finalvis,
           spw=linespw, # spw to do continuum subtraction on
           fitspw=fitspw, # regions without lines.
           excludechans=False, # fit the regions in fitspw
-          combine='spw', 
+          #combine='spw', uncomment if there are no line-free channels in the line spectral window.  
           solint='int',
           fitorder=1,
           want_cont=False) # This value should not be changed.
