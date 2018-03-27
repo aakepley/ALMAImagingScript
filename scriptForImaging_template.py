@@ -346,11 +346,16 @@ spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral win
 flagmanager(vis=contvis,mode='save',versionname='before_selfcal',merge='replace')
 
 # Get rid of any models that might be hanging around in the image header
-delmod(vis=contvis,field=field,otf=True)
+delmod(vis=contvis,otf=True,scr=True)
 
 # If you are re-doing your self-cal, uncomment the next line to reset
-# your corrected data column back to its original state.
-#clearcal(vis=contvis)
+# your corrected data column back to its original state and get rid of
+# the old model. You can check the contents of the model and corrected
+# data columns by plotting them using plotms. For example, 
+# plotms(vis=contvis, xaxis='uvwave', yaxis='amplitude', ydatacolumn='model',field=field)
+
+# clearcal(vis=contvis)
+# delmod(vis=contvis,otf=True,scr=True)
 
 # shallow clean on the continuum
 
