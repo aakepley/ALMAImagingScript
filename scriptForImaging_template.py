@@ -265,7 +265,7 @@ contvis = 'calibrated_final_cont.ms'
 #>>> e.g.,
 #>>> listobs(vis='uid___A002_Xc3412f_X53ff.ms',intent='OBSERVE_TARGET*',spw='*FULL_RES*')
 
-#>>>  aU.genImageName(vis=contvis,spw=map(int,contspws.split(',')),field=int(field.split('~')[0]),imtype='mfs',targettype='sci',stokes='I',mous='',modtext='manual',spwmap=sciencespws)
+#>>>  aU.genImageName(vis=contvis,spw=map(int,contspws.split(',')),field=int(field.split('~')[0]),imtype='mfs',targettype='sci',stokes='I',mous='',modtext='manual',spwmap=map(int,sciencespws.split(',')))
 contimagename = '' 
 
 # If necessary, run the following commands to get rid of older clean
