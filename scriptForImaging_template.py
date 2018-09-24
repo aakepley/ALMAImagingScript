@@ -245,6 +245,17 @@ robust=0.5
 niter=1000
 threshold = '0.0mJy'
 
+#>>> Guidelines for setting robust:
+
+#>>> Robust < 0.0 is not recommended for mosaics with poor-uv
+#>>> coverage. Using values of robust less than or equal to 0.0 will
+#>>> lead to major artifacts in the images including uneven noise
+#>>> across the image.
+
+#>>> If you are uv-tapering the data, you should set robust=2 (natural
+#>>> weighting) to avoid upweighting points that are going to be
+#>>> downweighted by uv-taper.
+
 #############################################
 # Imaging the Continuuum
 
@@ -292,7 +303,8 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename,
        field=field,
-       #  phasecenter=phasecenter, # uncomment if mosaic.      
+       #  phasecenter=phasecenter, # uncomment if mosaic.     
+       # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom', 
        # Uncomment the below to image with nterms>1 when the fractional bandwidth is greater than 10%.
@@ -379,6 +391,7 @@ tclean(vis=contvis,
        imagename=contimagename + '_p0',
        field=field,
        #phasecenter=phasecenter, # uncomment if mosaic.      
+       # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
        # Uncomment the below to image with nterms>1.
@@ -441,6 +454,7 @@ tclean(vis=contvis,
        imagename=contimagename + '_p1',
        field=field,
        # phasecenter=phasecenter, # uncomment if mosaic.      
+       # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
        # Uncomment the below to image with nterms>1.
@@ -499,6 +513,7 @@ tclean(vis=contvis,
        imagename=contimagename + '_p2',
        field=field,
        # phasecenter=phasecenter, # uncomment if mosaic.      
+       # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
        # Uncomment the below to image with nterms>1.
@@ -557,6 +572,7 @@ tclean(vis=contvis,
        imagename=contimagename + '_p3',
        field=field,
        # phasecenter=phasecenter, # uncomment if mosaic.      
+       # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
        # Uncomment the below to image with nterms>1.
@@ -617,7 +633,8 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename + '_ap',
        field=field,
-#      phasecenter=phasecenter, # uncomment if mosaic.      
+       # phasecenter=phasecenter, # uncomment if mosaic.      
+       # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
        # Uncomment the below to image with nterms>1.
@@ -797,6 +814,7 @@ tclean(vis=linevis,
        field=field,
        spw=spw,
        # phasecenter=phasecenter, # uncomment if mosaic.      
+       # mosweight = True, # uncomment if mosaic      
        specmode='cube',
        start=start,
        width=width,
