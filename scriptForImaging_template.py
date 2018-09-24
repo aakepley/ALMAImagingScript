@@ -177,7 +177,9 @@ field='0' # science field(s). For a mosaic, select all mosaic fields. DO NOT LEA
                 # field ids for each pointing will be re-numbered
                 # after your initial split. You can also specify the
                 # phase center using coordinates, e.g.,
-                # phasecenter='J2000 19h30m00 -40d00m00'
+                # phasecenter='J2000 19h30m00 -40d00m00'.
+# phasecenter = 'TRACKFIELD' # If imaging an ephemeris object (planet, etc), the phasecenter needs to be TRACKFIELD, not a field number as above.
+
 
 # image parameters.
 # ----------------
@@ -303,7 +305,7 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename,
        field=field,
-       #  phasecenter=phasecenter, # uncomment if mosaic.     
+       #  phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object     
        # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom', 
@@ -390,7 +392,7 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename + '_p0',
        field=field,
-       #phasecenter=phasecenter, # uncomment if mosaic.      
+       #phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object
        # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
@@ -453,7 +455,7 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename + '_p1',
        field=field,
-       # phasecenter=phasecenter, # uncomment if mosaic.      
+       # phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object
        # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
@@ -512,7 +514,7 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename + '_p2',
        field=field,
-       # phasecenter=phasecenter, # uncomment if mosaic.      
+       # phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object
        # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
@@ -571,7 +573,7 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename + '_p3',
        field=field,
-       # phasecenter=phasecenter, # uncomment if mosaic.      
+       # phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object
        # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
@@ -633,7 +635,7 @@ for ext in ['.image','.mask','.model','.image.pbcor','.psf','.residual','.pb','.
 tclean(vis=contvis,
        imagename=contimagename + '_ap',
        field=field,
-       # phasecenter=phasecenter, # uncomment if mosaic.      
+       # phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object
        # mosweight = True, # uncomment if mosaic
        specmode='mfs',
        deconvolver='hogbom',
@@ -813,7 +815,7 @@ tclean(vis=linevis,
        imagename=lineimagename, 
        field=field,
        spw=spw,
-       # phasecenter=phasecenter, # uncomment if mosaic.      
+       # phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object   
        # mosweight = True, # uncomment if mosaic      
        specmode='cube',
        start=start,
