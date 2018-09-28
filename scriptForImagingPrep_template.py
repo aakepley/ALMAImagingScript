@@ -142,7 +142,9 @@ concatvis='calibrated.ms'
 rmtables(concatvis)
 os.system('rm -rf ' + concatvis + '.flagversions')
 concat(vis=vislist,
+       #forcesingleephemfield='Uranus', # uncomment this line and insert source name if imaging an ephemeris object
        concatvis=concatvis)
+
 
 ###################################
 # Splitting off science target data
