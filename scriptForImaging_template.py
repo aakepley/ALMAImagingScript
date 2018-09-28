@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Thu May 10 15:14:02 EDT 2018
+#>>> Updated: Fri Sep 28 09:51:22 EDT 2018
 
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -10,9 +10,7 @@
 #>>> begin the line with a single '#', i.e., standard python comment
 #>>> syntax.  Helpful tip: Use the commands %cpaste or %paste to copy
 #>>> and paste indented sections of code into the casa command line.
-#>>> --------------------------------------------------------------------------------------#
-#>>> Imaging Template #
-#>>> --------------------------------------------------------------------------------------#
+
 #>>> The commands below serve as a guide to best practices for imaging
 #>>> ALMA data. It does not replace careful thought on your part while
 #>>> imaging the data. You can remove or modify sections as necessary
