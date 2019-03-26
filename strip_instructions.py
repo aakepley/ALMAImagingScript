@@ -9,7 +9,8 @@ def strip_instructions(infilename):
     
     Example: 
 	execfile('strip_instructions')
-	strip_instructions('scriptForImaging.py') 
+    	strip_instructions('scriptForImagingPrep_template.py') 
+	strip_instructions('scriptForImaging_template.py') 
     """
     
     import shutil

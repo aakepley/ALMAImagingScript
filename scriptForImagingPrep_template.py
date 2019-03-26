@@ -170,7 +170,7 @@ split(vis=concatvis,
 # Regridding spectral windows [OPTIONAL]
 
 #>>> The spws associated with a common rest frequency can be regridded to
-#>>> a single spectral window during cleaning or using the cvel
+#>>> a single spectral window during cleaning or using the cvel2
 #>>> command. The NA imaging team strongly recommends the first option,
 #>>> unless the lines shift too much between executions to identify an
 #>>> common channel range for continuum subtraction. The code below uses
@@ -194,17 +194,17 @@ spw = '0,5,10' # spws associated with a single rest frequency. Do not attempt to
 rmtables(regridvis)
 os.system('rm -rf ' + regridvis + '.flagversions')
     
-cvel(vis=sourcevis,
-     field=field,
-     outputvis=regridvis,
-     spw=spw,
-     mode=mode,
-     nchan=nchan,
-     width=width,
-     start=start,
-     restfreq=restfreq,
-     outframe=outframe,
-     veltype=veltype)
+cvel2(vis=sourcevis,
+      field=field,
+      outputvis=regridvis,
+      spw=spw,
+      mode=mode,
+      nchan=nchan,
+      width=width,
+      start=start,
+      restfreq=restfreq,
+      outframe=outframe,
+      veltype=veltype)
 
 #>>> If you have multiple sets of spws that you wish you combine, just
 #>>> repeat the above process with spw set to the other values.

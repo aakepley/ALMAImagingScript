@@ -318,7 +318,8 @@ tclean(vis=contvis,
        threshold = threshold,
        interactive = True,
        gridder = gridder,
-       pbcor = True)
+       pbcor = True,
+       usepointing=False)
        
 #>>> If interactively cleaning (interactive=True), then note number of
 #>>> iterations at which you stop for the PI. This number will help
@@ -363,7 +364,20 @@ refant = 'DV09' # reference antenna.
 #>>> that's present in all the executions. The task au.commonAntennas()
 #>>> can help with this.
 
-spwmap = [0,0,0] # mapping self-calibration solutions to individual spectral windows. Generally an array of n zeroes, where n is the number of spectral windows in the data sets.
+#>>> Indicate the spectral window mapping below. The spwmap map
+#>>> variable is a list that consists of n entries where n is the
+#>>> number of spectral windows. The value of each entry tells you
+#>>> which solution to apply to the indicated spectral window. For a
+#>>> single execution, you would apply the calibration from spw 0 to
+#>>> all spws since you are combining all spws in the solution below,
+#>>> so spwmap=[0,0,0,0]. For multiple executions, you want to apply
+#>>> the solution each execution to itself. For example, if you had 4
+#>>> spectral windows in a data set and two executions resulting in 8
+#>>> total spectral windows, you would want to apply the solutions for
+#>>> the first execution to itself and the solution to the second
+#>>> execution to itself, so spwmap=[0,0,0,0,4,4,4,4]
+
+spwmap = [0,0,0,0] # mapping self-calibration solutions to individual spectral windows.
 
 # save initial flags in case you don't like the final
 # self-calibration. The task applycal will flag data that doesn't have
@@ -405,7 +419,8 @@ tclean(vis=contvis,
        threshold=threshold, 
        interactive=True,
        gridder=gridder,
-       savemodel='modelcolumn')
+       savemodel='modelcolumn',
+       usepointing=False)
 
 #>>> Note number of iterations performed.
 
@@ -469,7 +484,8 @@ tclean(vis=contvis,
        interactive=True,
        gridder=gridder,
        #pbcor = True, #if final image
-       savemodel='modelcolumn')
+       savemodel='modelcolumn',
+       usepointing=False)
 
 # Note number of iterations performed.
 
@@ -528,7 +544,8 @@ tclean(vis=contvis,
        interactive=True,
        gridder=gridder,
        #pbcor = True, #if final image
-       savemodel='modelcolumn')
+       savemodel='modelcolumn',
+       usepointing=False)
 
 #>>> Note number of iterations performed.
 
@@ -587,7 +604,8 @@ tclean(vis=contvis,
        interactive=True,
        gridder=gridder,
        #pbcor = True, #if final image
-       savemodel='modelcolumn')
+       savemodel='modelcolumn',
+       usepointing=False)
 
 
 #>>> Note number of iterations performed.
@@ -649,7 +667,8 @@ tclean(vis=contvis,
        interactive=True,
        gridder=gridder,
        savemodel='modelcolumn',
-       pbcor=True) # apply the primary beam correction since this is the last image.
+       pbcor=True,
+       usepointing=False) # apply the primary beam correction since this is the last image.
 
 #>>> Note final RMS and number of clean iterations. Compare the RMS to
 #>>> the RMS from the earlier, pre-selfcal image.
@@ -833,7 +852,8 @@ tclean(vis=linevis,
        gridder=gridder,
        pbcor=True,
        restoringbeam='common',
-       chanchunks=-1) # break up large cubes automatically so that you don't run out of memory.
+       chanchunks=-1,
+       usepointing=False) # break up large cubes automatically so that you don't run out of memory.
 
 #>>> If interactively cleaning (interactive=True), then note number of
 #>>> iterations at which you stop for the PI. This number will help the
