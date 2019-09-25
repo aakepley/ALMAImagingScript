@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Fri Sep 28 09:51:22 EDT 2018
+#>>> Updated: Wed Sep 25 10:55:06 EDT 2019
 
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -371,7 +371,7 @@ refant = 'DV09' # reference antenna.
 #>>> single execution, you would apply the calibration from spw 0 to
 #>>> all spws since you are combining all spws in the solution below,
 #>>> so spwmap=[0,0,0,0]. For multiple executions, you want to apply
-#>>> the solution each execution to itself. For example, if you had 4
+#>>> the solution for each execution to itself. For example, if you had 4
 #>>> spectral windows in a data set and two executions resulting in 8
 #>>> total spectral windows, you would want to apply the solutions for
 #>>> the first execution to itself and the solution to the second
@@ -423,6 +423,13 @@ tclean(vis=contvis,
        usepointing=False)
 
 #>>> Note number of iterations performed.
+
+#>>> Note: before proceeding, you should verify that TCLEAN saved the MODEL 
+#>>> column. If it did, you will see a message like
+#>>> INFO .... ------ Predict Model ------
+#>>> INFO ... Saving model column
+#>>> if you don't see this in the CASA logger, you should call TCLEAN again 
+#>>> with niter=0, calcpsf=False, calcres=False to populate the modelcolumn
 
 # per scan solution
 rmtables('pcal1')
@@ -487,7 +494,15 @@ tclean(vis=contvis,
        savemodel='modelcolumn',
        usepointing=False)
 
-# Note number of iterations performed.
+#>>> Note number of iterations performed.
+
+
+#>>> Note: before proceeding, you should verify that TCLEAN saved the MODEL 
+#>>> column. If it did, you will see a message like
+#>>> INFO .... ------ Predict Model ------
+#>>> INFO ... Saving model column
+#>>> if you don't see this in the CASA logger, you should call TCLEAN again 
+#>>> with niter=0, calcpsf=False, calcres=False to populate the modelcolumn
 
 # shorter solution
 rmtables('pcal2')
@@ -549,6 +564,13 @@ tclean(vis=contvis,
 
 #>>> Note number of iterations performed.
 
+#>>> Note: before proceeding, you should verify that TCLEAN saved the MODEL 
+#>>> column. If it did, you will see a message like
+#>>> INFO .... ------ Predict Model ------
+#>>> INFO ... Saving model column
+#>>> if you don't see this in the CASA logger, you should call TCLEAN again 
+#>>> with niter=0, calcpsf=False, calcres=False to populate the modelcolumn
+
 # shorter solution
 rmtables('pcal3')
 gaincal(vis=contvis,
@@ -609,6 +631,14 @@ tclean(vis=contvis,
 
 
 #>>> Note number of iterations performed.
+
+#>>> Note: before proceeding, you should verify that TCLEAN saved the MODEL 
+#>>> column. If it did, you will see a message like
+#>>> INFO .... ------ Predict Model ------
+#>>> INFO ... Saving model column
+#>>> if you don't see this in the CASA logger, you should call TCLEAN again 
+#>>> with niter=0, calcpsf=False, calcres=False to populate the modelcolumn
+
 
 rmtables('apcal')
 gaincal(vis=contvis,
@@ -835,7 +865,8 @@ tclean(vis=linevis,
        # phasecenter=phasecenter, # uncomment if mosaic or imaging an ephemeris object   
        # mosweight = True, # uncomment if mosaic      
        specmode='cube', # comment this if observing an ephemeris source
-       #specmode='cubesource', #uncomment this line if observing an ephemeris source
+       # specmode='cubesource', #uncomment this line if observing an ephemeris source
+       # perchanweightdensity=False # uncomment if you are running in CASA >= 5.5.0. 
        start=start,
        width=width,
        nchan=nchan, 
