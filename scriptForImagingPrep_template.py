@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING PREP SCRIPT                                   #
 #>>> ======================================================================================#
 #>>>
-#>>> Updated: Fri Sep 28 09:50:52 EDT 2018
+#>>> Updated: Wed Apr  7 09:25:24 EDT 2021
 
 #>>>
 #>>> Lines beginning with '#>>>' are instructions to the data imager
@@ -89,11 +89,11 @@ for vis in vislist:
         for spw in spwlist:
             plotms(vis=vis,xaxis='uvwave',yaxis='amp',avgtime='3e8',
                    field=field,spw=spw) 
-            raw_input("push enter to continue")
+            input("push enter to continue")
 
             plotms(vis=vis,xaxis='chan',yaxis='amp',avgtime='3e8',
                    field=field,spw=spw) 
-            raw_input("push enter to continue")
+            input("push enter to continue")
 
 # Flag the offending data. See flagdata help for more info.
 #flagdata(vis='',mode='manual',action='apply',flagbackup=False)

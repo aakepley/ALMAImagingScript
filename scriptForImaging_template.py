@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Wed Sep 25 10:55:06 EDT 2019
+#>>> Updated: Wed Apr  7 09:57:35 EDT 2021
 
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
@@ -33,14 +33,22 @@
 #>>> suggested changes or find any bugs that are almost certainly
 #>>> there.
 
+# This script has been tested for CASA 6.1.1-15.
+
+
 ########################################
 # Check CASA version
 
 import re
-import casadef
 
-if casadef.casa_version < '4.4.0' :
-    sys.exit("Please use CASA version greater than or equal to 4.4.0 with this script")
+try:
+    import casalith
+except:
+    print("Script requires CASA 6.0 or greater")
+
+
+if casalith.compare_version("<",[6,1,1,15]):
+    print("Please use CASA version greater than or equal to 6.1.1-15 with this script")
 
 
 ##################################################
@@ -84,11 +92,9 @@ plotms(vis=finalvis, xaxis='channel', yaxis='amplitude',
        iteraxis='spw' )
 
 
-#>>> In CASA 4.4 and higher, the behavior of the avgchannel parameter
-#>>> has changed. Now when you plot binned channels, plotms displays
+#>>> Note that when you average channels in plotms, it displays
 #>>> the "bin" number rather than the average channel number of each
-#>>> bin. A ticket has been filed to revert this back to the previous
-#>>> (more sensible) behavior, but this behavior hasn't been fixed as of CASA 5.1.
+#>>> bin. 
 
 #>>> If you don't see any obvious lines in the above plot, you may to try
 #>>> to set avgbaseline=True with uvrange (e.g., <100m). Limiting the
@@ -450,13 +456,11 @@ gaincal(vis=contvis,
 #>>> has only a small effect on the image.
 
 # Check the solution
-plotcal(caltable='pcal1',
-        xaxis='time',
-        yaxis='phase',
-        timerange='',
-        iteration='antenna',
-        subplot=421,
-        plotrange=[0,0,-180,180])
+plotms(vis='pcal1',
+       xaxis='time',
+       yaxis='phase',
+       iteraxis='antenna',
+       plotrange=[0,0,-180,180])
 
 # apply the calibration to the data for next round of imaging
 applycal(vis=contvis,
@@ -518,13 +522,11 @@ gaincal(vis=contvis,
         minblperant=6)
 
 # Check the solution
-plotcal(caltable='pcal2',
-        xaxis='time',
-        yaxis='phase',
-        timerange='',
-        iteration='antenna',
-        subplot=421,
-        plotrange=[0,0,-180,180])
+plotms(vis='pcal2',
+       xaxis='time',
+       yaxis='phase',
+       iteraxis='antenna',
+       plotrange=[0,0,-180,180])
 
 # apply the calibration to the data for next round of imaging
 applycal(vis=contvis,
@@ -585,13 +587,11 @@ gaincal(vis=contvis,
         minblperant=6)
 
 # Check the solution
-plotcal(caltable='pcal3',
-        xaxis='time',
-        yaxis='phase',
-        timerange='',
-        iteration='antenna',
-        subplot=421,
-        plotrange=[0,0,-180,180])
+plotms(vis='pcal3',
+       xaxis='time',
+       yaxis='phase',
+       iteraxis='antenna',
+       plotrange=[0,0,-180,180])
 
 # apply the calibration to the data for next round of imaging
 applycal(vis=contvis,
@@ -656,13 +656,11 @@ gaincal(vis=contvis,
         spwmap=spwmap,
         solnorm=True)
 
-plotcal(caltable='apcal',
-        xaxis='time',
-        yaxis='amp',
-        timerange='',
-        iteration='antenna',
-        subplot=421,
-        plotrange=[0,0,0.2,1.8])
+plotms(vis='apcal',
+       xaxis='time',
+       yaxis='amp',
+       iteraxis='antenna',
+       plotrange=[0,0,0.2,1.8])
 
 applycal(vis=contvis,
          spwmap=[spwmap,spwmap], # select which spws to apply the solutions for each table
@@ -883,8 +881,8 @@ tclean(vis=linevis,
        gridder=gridder,
        pbcor=True,
        restoringbeam='common',
-       chanchunks=-1,
-       usepointing=False) # break up large cubes automatically so that you don't run out of memory.
+       chanchunks=-1, # break up large cubes automatically so that you don't run out of memory.
+       usepointing=False) 
 
 #>>> If interactively cleaning (interactive=True), then note number of
 #>>> iterations at which you stop for the PI. This number will help the
