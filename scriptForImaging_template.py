@@ -2,7 +2,7 @@
 #>>>                        TEMPLATE IMAGING SCRIPT                                       #
 #>>> =====================================================================================#
 #>>>
-#>>> Updated: Tue Oct 12  10:11 EDT 2021
+#>>> Updated: Wed  11:49 EDT 2021
 
 #>>> Lines beginning with '#>>>' are instructions to the data imager
 #>>> and will be removed from the script delivered to the PI. If you
